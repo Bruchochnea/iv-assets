@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IV logo marquee</title>
+<style>
+html,body{margin:0;background:transparent}
+.wrap{position:relative;width:100%;max-width:1440px;height:72px;margin:0 auto}
+.mq{--fade:160px;--dur:52s;overflow:hidden;height:72px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent);mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent)}
+.mq-track{display:flex;width:max-content;margin-left:var(--fade);animation:mq var(--dur) linear infinite}
+.mq.paused .mq-track,.mq:hover .mq-track,.mq:focus-within .mq-track{animation-play-state:paused}
+.mq-set{display:flex;align-items:center}
+.lg{flex:none;margin-right:112px;display:inline-flex;align-items:center;height:46px}
+.lg img{filter:brightness(0) invert(1);opacity:.62;display:block}
+.lg img[alt="Lume"],.lg img[src*="lume"]{opacity:.78}
+@keyframes mq{to{transform:translateX(-50%)}}
+#mqPause{position:absolute;right:16px;bottom:8px;z-index:2;min-width:36px;min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(20,20,21,.55);color:#fff;font:600 13px/1 Figtree,system-ui,sans-serif;cursor:pointer}
+#mqPause:focus-visible{outline:2px solid #6FD0FF;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  .mq{-webkit-mask-image:none;mask-image:none}
+  .mq-track{animation:none;width:auto;margin-left:0;flex-wrap:wrap;justify-content:center}
+  .mq-set[aria-hidden]{display:none}
+  #mqPause{display:none}
+}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="mq" id="mq" tabindex="0" aria-label="Client logos">
+    <div class="mq-track">
+      <div class="mq-set"><span class="lg"><img src="/mvp/logos/k12.png" alt="K12" width="77" height="38" style="width:77px;height:38px"></span><span class="lg"><img src="/mvp/logos/podium.png" alt="Podium" width="150" height="32" style="width:150px;height:32px"></span><span class="lg"><img src="/mvp/logos/zerorez.png" alt="Zerorez" width="170" height="25" style="width:170px;height:25px"></span><span class="lg"><img src="/mvp/logos/lume.png" alt="Lume" width="64" height="46" style="width:64px;height:46px"></span><span class="lg"><img src="/mvp/logos/fastpace-health.png" alt="Fast Pace Health" width="213" height="28" style="width:213px;height:28px"></span><span class="lg"><img src="/mvp/logos/university-of-phoenix.png" alt="University of Phoenix" width="191" height="42" style="width:191px;height:42px"></span><span class="lg"><img src="/mvp/logos/k12.png" alt="" width="77" height="38" style="width:77px;height:38px"></span><span class="lg"><img src="/mvp/logos/podium.png" alt="" width="150" height="32" style="width:150px;height:32px"></span><span class="lg"><img src="/mvp/logos/zerorez.png" alt="" width="170" height="25" style="width:170px;height:25px"></span><span class="lg"><img src="/mvp/logos/lume.png" alt="" width="64" height="46" style="width:64px;height:46px"></span><span class="lg"><img src="/mvp/logos/fastpace-health.png" alt="" width="213" height="28" style="width:213px;height:28px"></span><span class="lg"><img src="/mvp/logos/university-of-phoenix.png" alt="" width="191" height="42" style="width:191px;height:42px"></span></div>
+      <div class="mq-set" aria-hidden="true"><span class="lg"><img src="/mvp/logos/k12.png" alt="" width="77" height="38" style="width:77px;height:38px"></span><span class="lg"><img src="/mvp/logos/podium.png" alt="" width="150" height="32" style="width:150px;height:32px"></span><span class="lg"><img src="/mvp/logos/zerorez.png" alt="" width="170" height="25" style="width:170px;height:25px"></span><span class="lg"><img src="/mvp/logos/lume.png" alt="" width="64" height="46" style="width:64px;height:46px"></span><span class="lg"><img src="/mvp/logos/fastpace-health.png" alt="" width="213" height="28" style="width:213px;height:28px"></span><span class="lg"><img src="/mvp/logos/university-of-phoenix.png" alt="" width="191" height="42" style="width:191px;height:42px"></span><span class="lg"><img src="/mvp/logos/k12.png" alt="" width="77" height="38" style="width:77px;height:38px"></span><span class="lg"><img src="/mvp/logos/podium.png" alt="" width="150" height="32" style="width:150px;height:32px"></span><span class="lg"><img src="/mvp/logos/zerorez.png" alt="" width="170" height="25" style="width:170px;height:25px"></span><span class="lg"><img src="/mvp/logos/lume.png" alt="" width="64" height="46" style="width:64px;height:46px"></span><span class="lg"><img src="/mvp/logos/fastpace-health.png" alt="" width="213" height="28" style="width:213px;height:28px"></span><span class="lg"><img src="/mvp/logos/university-of-phoenix.png" alt="" width="191" height="42" style="width:191px;height:42px"></span></div>
+    </div>
+  </div>
+  <button type="button" id="mqPause" aria-pressed="false">Pause</button>
+</div>
+<script>
+const mq=document.getElementById('mq');
+const btn=document.getElementById('mqPause');
+btn.addEventListener('click',()=>{
+  const on=mq.classList.toggle('paused');
+  btn.setAttribute('aria-pressed', on?'true':'false');
+  btn.textContent=on?'Play':'Pause';
+});
+</script>
+</body></html>

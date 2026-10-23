@@ -58,23 +58,51 @@
 <div style="font-size:17px;line-height:1.4;color:#141415">One active request, turned around in under 48 hours.</div><div style="margin-top:22px"><div style="display:flex;align-items:center;gap:18px;"><span class=pill style="background:#141415;color:#fff;height:48px;font-size:16px;">Book a call</span></div></div></div></div></div>
 <script>
 (function () {
+  /* IV parent↔embed anim bridge: CSS @keyframes .anim play on parent postMessage (Framer iframes). */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   if (!nodes.length) return;
-  if (reduce) { nodes.forEach(function (el) { el.classList.remove("anim"); }); return; }
-  if (!("IntersectionObserver" in window)) return;
-  nodes.forEach(function (el) { el.classList.remove("anim"); el.setAttribute("data-anim-ready", "1"); });
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      var el = e.target;
-      if (el.getAttribute("data-anim-played") === "1") return;
-      el.setAttribute("data-anim-played", "1");
-      el.classList.add("anim");
-      io.unobserve(el);
+  if (reduce) {
+    nodes.forEach(function (el) { el.classList.remove("anim"); });
+    return;
+  }
+
+  var played = false;
+
+  function strip() {
+    nodes.forEach(function (el) {
+      el.classList.remove("anim");
+      el.removeAttribute("data-anim-played");
     });
-  }, { threshold: 0.35, root: null });
-  nodes.forEach(function (el) { io.observe(el); });
+    played = false;
+  }
+
+  function play() {
+    if (played) return;
+    played = true;
+    nodes.forEach(function (el) {
+      void el.offsetWidth; /* reflow so keyframes restart from 0 */
+      el.classList.add("anim");
+      el.setAttribute("data-anim-played", "1");
+    });
+  }
+
+  /* Pause timelines on load (not fill-mode end). */
+  strip();
+
+  window.addEventListener("message", function (ev) {
+    var d = ev.data;
+    if (!d || d.source !== "iv-parent") return;
+    if (d.type === "iv-anim-play") play();
+    else if (d.type === "iv-anim-reset") strip();
+  });
+
+  if (window.parent !== window) {
+    parent.postMessage({ source: "iv-embed", type: "iv-anim-ready", id: location.pathname }, "*");
+  } else {
+    /* Standalone asset Preview: play immediately. */
+    play();
+  }
 })();
 </script>
 </body></html>

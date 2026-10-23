@@ -55,4 +55,26 @@
 <mask id="L8k"><rect x="-40" y="100" width="180" height="70" fill="url(#L8m)"/></mask>
 <filter id="L8gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L8b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L8sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="75.0" cy="50.0" r="19" fill="#fff"/><circle cx="62.5" cy="71.7" r="19" fill="#fff"/><circle cx="37.5" cy="71.7" r="19" fill="#fff"/><circle cx="25.0" cy="50.0" r="19" fill="#fff"/><circle cx="37.5" cy="28.3" r="19" fill="#fff"/><circle cx="62.5" cy="28.3" r="19" fill="#fff"/><circle cx="50" cy="50" r="28" fill="#fff"/></mask></defs><g mask="url(#L8k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><circle cx="75.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="62.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="37.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="25.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="37.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="62.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="50" cy="50" r="28" fill="#895CF5"/></g></g><g transform="rotate(-8 50 50)"><circle cx="75.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="62.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="37.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="25.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="37.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="62.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="50" cy="50" r="28" fill="#895CF5"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L8h)" mask="url(#L8sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L8s)" mask="url(#L8sm)"/><rect x="40.0" y="40.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="40.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></div></div>
 <div class=abs style="left:20px;right:20px;top:380px"><div style="font:800 44px/1 Figtree;letter-spacing:-.045em;margin:0 0 12px;color:#141415">Unlimited Creative</div>
-<div style="font-size:17px;line-height:1.4;color:#141415">One active request, turned around in under 48 hours.</div><div style="margin-top:22px"><div style="display:flex;align-items:center;gap:18px;"><span class=pill style="background:#141415;color:#fff;height:48px;font-size:16px;">Book a call</span></div></div></div></div></div></body></html>
+<div style="font-size:17px;line-height:1.4;color:#141415">One active request, turned around in under 48 hours.</div><div style="margin-top:22px"><div style="display:flex;align-items:center;gap:18px;"><span class=pill style="background:#141415;color:#fff;height:48px;font-size:16px;">Book a call</span></div></div></div></div></div>
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
+  if (!nodes.length) return;
+  if (reduce) { nodes.forEach(function (el) { el.classList.remove("anim"); }); return; }
+  if (!("IntersectionObserver" in window)) return;
+  nodes.forEach(function (el) { el.classList.remove("anim"); el.setAttribute("data-anim-ready", "1"); });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      if (el.getAttribute("data-anim-played") === "1") return;
+      el.setAttribute("data-anim-played", "1");
+      el.classList.add("anim");
+      io.unobserve(el);
+    });
+  }, { threshold: 0.35, root: null });
+  nodes.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body></html>

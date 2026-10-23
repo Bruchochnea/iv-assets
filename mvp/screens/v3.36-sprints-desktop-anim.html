@@ -105,4 +105,26 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 <radialGradient id="L12g"><stop offset=".6" stop-color="#EB4699" stop-opacity="1"/><stop offset=".72" stop-color="#EB4699" stop-opacity=".45"/><stop offset="1" stop-color="#EB4699" stop-opacity="0"/></radialGradient>
 <linearGradient id="L12m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <mask id="L12k"><rect x="-40" y="100" width="180" height="70" fill="url(#L12m)"/></mask>
-<filter id="L12gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L12b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L12sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g mask="url(#L12k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/></g></g><g transform="rotate(-8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L12h)" mask="url(#L12sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L12s)" mask="url(#L12sm)"/><g transform="translate(-2 -4)"><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></g></svg></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script></body></html>
+<filter id="L12gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L12b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L12sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g mask="url(#L12k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/></g></g><g transform="rotate(-8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L12h)" mask="url(#L12sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L12s)" mask="url(#L12sm)"/><g transform="translate(-2 -4)"><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></g></svg></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script>
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
+  if (!nodes.length) return;
+  if (reduce) { nodes.forEach(function (el) { el.classList.remove("anim"); }); return; }
+  if (!("IntersectionObserver" in window)) return;
+  nodes.forEach(function (el) { el.classList.remove("anim"); el.setAttribute("data-anim-ready", "1"); });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      if (el.getAttribute("data-anim-played") === "1") return;
+      el.setAttribute("data-anim-played", "1");
+      el.classList.add("anim");
+      io.unobserve(el);
+    });
+  }, { threshold: 0.35, root: null });
+  nodes.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body></html>

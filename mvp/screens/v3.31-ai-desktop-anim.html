@@ -113,4 +113,26 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 <radialGradient id="L19g"><stop offset=".6" stop-color="#F19D38" stop-opacity="1"/><stop offset=".72" stop-color="#F19D38" stop-opacity=".45"/><stop offset="1" stop-color="#F19D38" stop-opacity="0"/></radialGradient>
 <linearGradient id="L19m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <mask id="L19k"><rect x="-40" y="100" width="180" height="70" fill="url(#L19m)"/></mask>
-<filter id="L19gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L19b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L19sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask></defs><circle cx="50" cy="51" r="64" fill="url(#L19g)" opacity="0.35" filter="url(#L19gb)"/><ellipse cx="50" cy="103" rx="40" ry="5" fill="#000" opacity=".8" filter="url(#L19b)"/><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L19h)" mask="url(#L19sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L19s)" mask="url(#L19sm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script></body></html>
+<filter id="L19gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L19b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L19sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask></defs><circle cx="50" cy="51" r="64" fill="url(#L19g)" opacity="0.35" filter="url(#L19gb)"/><ellipse cx="50" cy="103" rx="40" ry="5" fill="#000" opacity=".8" filter="url(#L19b)"/><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L19h)" mask="url(#L19sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L19s)" mask="url(#L19sm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script>
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
+  if (!nodes.length) return;
+  if (reduce) { nodes.forEach(function (el) { el.classList.remove("anim"); }); return; }
+  if (!("IntersectionObserver" in window)) return;
+  nodes.forEach(function (el) { el.classList.remove("anim"); el.setAttribute("data-anim-ready", "1"); });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      if (el.getAttribute("data-anim-played") === "1") return;
+      el.setAttribute("data-anim-played", "1");
+      el.classList.add("anim");
+      io.unobserve(el);
+    });
+  }, { threshold: 0.35, root: null });
+  nodes.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body></html>

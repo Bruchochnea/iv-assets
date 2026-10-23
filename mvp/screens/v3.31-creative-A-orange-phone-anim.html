@@ -58,7 +58,7 @@
 <div style="font-size:17px;line-height:1.4;color:#141415">One active request, turned around in under 48 hours.</div><div style="margin-top:22px"><div style="display:flex;align-items:center;gap:18px;"><span class=pill style="background:#141415;color:#fff;height:48px;font-size:16px;">Book a call</span></div></div></div></div></div>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r4 Soft Soft-clear */
+  /* IV parent↔embed anim bridge r4b — self-play fallback if parent silent */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   if (!nodes.length) return;
@@ -68,6 +68,7 @@
   }
 
   var played = false;
+  var gotParent = false;
 
   function strip() {
     nodes.forEach(function (el) {
@@ -101,6 +102,7 @@
   window.addEventListener("message", function (ev) {
     var d = ev.data;
     if (!d || d.source !== "iv-parent") return;
+    gotParent = true;
     if (d.type === "iv-anim-play") play();
     else if (d.type === "iv-anim-reset") strip();
   });
@@ -108,6 +110,10 @@
   if (window.parent !== window) {
     announce();
     setInterval(function () { if (!played) announce(); }, 800);
+    /* Fallback: Preview / missing Custom Code — self-play after silence */
+    setTimeout(function () {
+      if (!played) play();
+    }, 1100);
   } else {
     play();
   }

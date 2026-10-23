@@ -58,7 +58,7 @@
 <div style="font-size:17px;line-height:1.4;color:#141415">One active request, turned around in under 48 hours.</div><div style="margin-top:22px"><div style="display:flex;align-items:center;gap:18px;"><span class=pill style="background:#141415;color:#fff;height:48px;font-size:16px;">Book a call</span></div></div></div></div></div>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r4b — self-play fallback if parent silent */
+  /* IV parent↔embed anim bridge r4c — loop replay so Preview always catches early→late */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   if (!nodes.length) return;
@@ -68,9 +68,11 @@
   }
 
   var played = false;
-  var gotParent = false;
+  var loopTimer = null;
+  var LOOP_MS = 4800;
 
   function strip() {
+    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
     nodes.forEach(function (el) {
       el.classList.remove("anim");
       el.removeAttribute("data-anim-played");
@@ -78,15 +80,27 @@
     played = false;
   }
 
+  function armLoop() {
+    if (loopTimer) clearTimeout(loopTimer);
+    loopTimer = setTimeout(function () {
+      nodes.forEach(function (el) {
+        el.classList.remove("anim");
+        void el.offsetWidth;
+        el.classList.add("anim");
+      });
+      armLoop();
+    }, LOOP_MS);
+  }
+
   function play() {
-    if (played) return;
-    played = true;
     nodes.forEach(function (el) {
       el.classList.remove("anim");
       void el.offsetWidth;
       el.classList.add("anim");
       el.setAttribute("data-anim-played", "1");
     });
+    played = true;
+    armLoop();
     if (window.parent !== window) {
       try { parent.postMessage({ source: "iv-embed", type: "iv-anim-played", id: location.pathname }, "*"); } catch (e) {}
     }
@@ -102,7 +116,6 @@
   window.addEventListener("message", function (ev) {
     var d = ev.data;
     if (!d || d.source !== "iv-parent") return;
-    gotParent = true;
     if (d.type === "iv-anim-play") play();
     else if (d.type === "iv-anim-reset") strip();
   });
@@ -110,7 +123,7 @@
   if (window.parent !== window) {
     announce();
     setInterval(function () { if (!played) announce(); }, 800);
-    /* Fallback: Preview / missing Custom Code — self-play after silence */
+    /* Fallback: Preview / missing Custom Code — self-play then loop */
     setTimeout(function () {
       if (!played) play();
     }, 1100);

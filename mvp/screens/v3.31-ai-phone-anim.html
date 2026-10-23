@@ -112,7 +112,7 @@
 <filter id="L22gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L22b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L22sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask></defs><circle cx="50" cy="51" r="64" fill="url(#L22g)" opacity="0.35" filter="url(#L22gb)"/><ellipse cx="50" cy="103" rx="40" ry="5" fill="#000" opacity=".8" filter="url(#L22b)"/><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L22h)" mask="url(#L22sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L22s)" mask="url(#L22sm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></div></div></div></div>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r4b — self-play fallback if parent silent */
+  /* IV parent↔embed anim bridge r4c — loop replay so Preview always catches early→late */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   if (!nodes.length) return;
@@ -122,9 +122,11 @@
   }
 
   var played = false;
-  var gotParent = false;
+  var loopTimer = null;
+  var LOOP_MS = 4800;
 
   function strip() {
+    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
     nodes.forEach(function (el) {
       el.classList.remove("anim");
       el.removeAttribute("data-anim-played");
@@ -132,15 +134,27 @@
     played = false;
   }
 
+  function armLoop() {
+    if (loopTimer) clearTimeout(loopTimer);
+    loopTimer = setTimeout(function () {
+      nodes.forEach(function (el) {
+        el.classList.remove("anim");
+        void el.offsetWidth;
+        el.classList.add("anim");
+      });
+      armLoop();
+    }, LOOP_MS);
+  }
+
   function play() {
-    if (played) return;
-    played = true;
     nodes.forEach(function (el) {
       el.classList.remove("anim");
       void el.offsetWidth;
       el.classList.add("anim");
       el.setAttribute("data-anim-played", "1");
     });
+    played = true;
+    armLoop();
     if (window.parent !== window) {
       try { parent.postMessage({ source: "iv-embed", type: "iv-anim-played", id: location.pathname }, "*"); } catch (e) {}
     }
@@ -156,7 +170,6 @@
   window.addEventListener("message", function (ev) {
     var d = ev.data;
     if (!d || d.source !== "iv-parent") return;
-    gotParent = true;
     if (d.type === "iv-anim-play") play();
     else if (d.type === "iv-anim-reset") strip();
   });
@@ -164,7 +177,7 @@
   if (window.parent !== window) {
     announce();
     setInterval(function () { if (!played) announce(); }, 800);
-    /* Fallback: Preview / missing Custom Code — self-play after silence */
+    /* Fallback: Preview / missing Custom Code — self-play then loop */
     setTimeout(function () {
       if (!played) play();
     }, 1100);

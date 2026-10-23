@@ -108,7 +108,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 <filter id="L12gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L12b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L12sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g mask="url(#L12k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/></g></g><g transform="rotate(-8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L12h)" mask="url(#L12sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L12s)" mask="url(#L12sm)"/><g transform="translate(-2 -4)"><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></g></svg></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r4b — self-play fallback if parent silent */
+  /* IV parent↔embed anim bridge r4c — loop replay so Preview always catches early→late */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   if (!nodes.length) return;
@@ -118,9 +118,11 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   }
 
   var played = false;
-  var gotParent = false;
+  var loopTimer = null;
+  var LOOP_MS = 4800;
 
   function strip() {
+    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
     nodes.forEach(function (el) {
       el.classList.remove("anim");
       el.removeAttribute("data-anim-played");
@@ -128,15 +130,27 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     played = false;
   }
 
+  function armLoop() {
+    if (loopTimer) clearTimeout(loopTimer);
+    loopTimer = setTimeout(function () {
+      nodes.forEach(function (el) {
+        el.classList.remove("anim");
+        void el.offsetWidth;
+        el.classList.add("anim");
+      });
+      armLoop();
+    }, LOOP_MS);
+  }
+
   function play() {
-    if (played) return;
-    played = true;
     nodes.forEach(function (el) {
       el.classList.remove("anim");
       void el.offsetWidth;
       el.classList.add("anim");
       el.setAttribute("data-anim-played", "1");
     });
+    played = true;
+    armLoop();
     if (window.parent !== window) {
       try { parent.postMessage({ source: "iv-embed", type: "iv-anim-played", id: location.pathname }, "*"); } catch (e) {}
     }
@@ -152,7 +166,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   window.addEventListener("message", function (ev) {
     var d = ev.data;
     if (!d || d.source !== "iv-parent") return;
-    gotParent = true;
     if (d.type === "iv-anim-play") play();
     else if (d.type === "iv-anim-reset") strip();
   });
@@ -160,7 +173,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   if (window.parent !== window) {
     announce();
     setInterval(function () { if (!played) announce(); }, 800);
-    /* Fallback: Preview / missing Custom Code — self-play after silence */
+    /* Fallback: Preview / missing Custom Code — self-play then loop */
     setTimeout(function () {
       if (!played) play();
     }, 1100);

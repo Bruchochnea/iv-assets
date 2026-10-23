@@ -4,22 +4,25 @@
 <title>IV logo marquee</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 html,body{margin:0;background:transparent}
-.wrap{position:relative;width:100%;max-width:1440px;height:72px;margin:0 auto}
+.wrap{position:relative;width:100%;max-width:1440px;height:72px;margin:52px auto 0}
 .mq{--fade:160px;--dur:52s;overflow:hidden;height:72px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent);mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent)}
 .mq-track{display:flex;width:max-content;margin-left:var(--fade);animation:mq var(--dur) linear infinite}
-.mq.paused .mq-track,.mq:hover .mq-track,.mq:focus-within .mq-track{animation-play-state:paused}
+.mq.is-paused .mq-track,.mq.paused .mq-track,.mq:hover .mq-track,.mq:focus-within .mq-track{animation-play-state:paused}
 .mq-set{display:flex;align-items:center}
 .lg{flex:none;margin-right:112px;display:inline-flex;align-items:center;height:46px}
 .lg img{filter:brightness(0) invert(1);opacity:.62;display:block}
 .lg img[alt="Lume"],.lg img[src*="lume"]{opacity:.78}
 @keyframes mq{to{transform:translateX(-50%)}}
-#mqPause{position:absolute;right:16px;bottom:8px;z-index:2;min-width:36px;min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(20,20,21,.55);color:#fff;font:600 13px/1 Figtree,system-ui,sans-serif;cursor:pointer}
-#mqPause:focus-visible{outline:2px solid #6FD0FF;outline-offset:2px}
+#mqPause{position:absolute;right:24px;top:-52px;transform:none;z-index:6;box-sizing:border-box;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(10,10,10,.55);color:#fff;font:inherit;box-shadow:none;cursor:pointer;pointer-events:auto;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background 120ms ease,border-color 120ms ease}
+#mqPause:hover{background:rgba(10,10,10,.78);border-color:rgba(255,255,255,.36)}
+#mqPause:focus-visible{outline:3px solid #6FD0FF;outline-offset:3px}
+#mqPause svg{display:block}#mqPause .ico-play{display:none}
+#mqPause[aria-pressed="true"] .ico-pause{display:none}#mqPause[aria-pressed="true"] .ico-play{display:block}
 @media (prefers-reduced-motion:reduce){
   .mq{-webkit-mask-image:none;mask-image:none}
   .mq-track{animation:none;width:auto;margin-left:0;flex-wrap:wrap;justify-content:center}
   .mq-set[aria-hidden]{display:none}
-  #mqPause{display:none}
+  #mqPause{display:none!important}
 }
 </style></head>
 <body>
@@ -30,15 +33,16 @@ html,body{margin:0;background:transparent}
       <div class="mq-set" aria-hidden="true"><span class="lg"><img src="/mvp/logos/k12.png" alt="" width="77" height="38" style="width:77px;height:38px"></span><span class="lg"><img src="/mvp/logos/podium.png" alt="" width="150" height="32" style="width:150px;height:32px"></span><span class="lg"><img src="/mvp/logos/zerorez.png" alt="" width="170" height="25" style="width:170px;height:25px"></span><span class="lg"><img src="/mvp/logos/lume.png" alt="" width="64" height="46" style="width:64px;height:46px"></span><span class="lg"><img src="/mvp/logos/fastpace-health.png" alt="" width="213" height="28" style="width:213px;height:28px"></span><span class="lg"><img src="/mvp/logos/university-of-phoenix.png" alt="" width="191" height="42" style="width:191px;height:42px"></span><span class="lg"><img src="/mvp/logos/k12.png" alt="" width="77" height="38" style="width:77px;height:38px"></span><span class="lg"><img src="/mvp/logos/podium.png" alt="" width="150" height="32" style="width:150px;height:32px"></span><span class="lg"><img src="/mvp/logos/zerorez.png" alt="" width="170" height="25" style="width:170px;height:25px"></span><span class="lg"><img src="/mvp/logos/lume.png" alt="" width="64" height="46" style="width:64px;height:46px"></span><span class="lg"><img src="/mvp/logos/fastpace-health.png" alt="" width="213" height="28" style="width:213px;height:28px"></span><span class="lg"><img src="/mvp/logos/university-of-phoenix.png" alt="" width="191" height="42" style="width:191px;height:42px"></span></div>
     </div>
   </div>
-  <button type="button" id="mqPause" aria-pressed="false">Pause</button>
+  <button type="button" class="mq-pause" id="mqPause" aria-pressed="false" aria-label="Pause animation"><svg class="ico-pause" width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><rect x="0" y="0" width="3" height="14" rx="1" fill="currentColor"/><rect x="9" y="0" width="3" height="14" rx="1" fill="currentColor"/></svg><svg class="ico-play" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 2.2v9.6L12 7z" fill="currentColor"/></svg></button>
 </div>
 <script>
 const mq=document.getElementById('mq');
 const btn=document.getElementById('mqPause');
+if(matchMedia('(prefers-reduced-motion:reduce)').matches){btn.hidden=true;mq.classList.add('is-paused');}
 btn.addEventListener('click',()=>{
-  const on=mq.classList.toggle('paused');
+  const on=mq.classList.toggle('is-paused');mq.classList.toggle('paused',on);
   btn.setAttribute('aria-pressed', on?'true':'false');
-  btn.textContent=on?'Play':'Pause';
+      btn.setAttribute('aria-label', on?'Play animation':'Pause animation');
 });
 </script>
 </body></html>

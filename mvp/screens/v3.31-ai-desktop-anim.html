@@ -116,15 +116,20 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 <filter id="L19gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L19b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L19sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask></defs><circle cx="50" cy="51" r="64" fill="url(#L19g)" opacity="0.35" filter="url(#L19gb)"/><ellipse cx="50" cy="103" rx="40" ry="5" fill="#000" opacity=".8" filter="url(#L19b)"/><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L19h)" mask="url(#L19sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L19s)" mask="url(#L19sm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r5 — scroll-progress scrub + fluid scale (not r4c timer loop) */
+  /* IV parent↔embed anim bridge r5b — scroll-progress scrub + no-bridge fallback + fluid scale (no timer loops) */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var DESIGN_W = 1440;
   var DESIGN_H = 900;
   var STORY_MS = 4800;
+  /* Scrub floor: p=0 seeks here (fraction of timeline end) so early scroll is never blank */
+  var FLOOR = 0.1;
+  var BRIDGE_WAIT_MS = 1200;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   var lastProgress = 0;
-  var scrubArmed = false;
-  var playedOnce = false;
+  var mode = "boot"; /* boot → auto (self-driven, no bridge) | scrub (parent bridge) */
+  var parentSized = false;
+  var announceTimer = 0;
+  var fallbackTimer = 0;
 
   function applyScale(w) {
     var pw = Math.max(1, Number(w) || window.innerWidth || DESIGN_W);
@@ -140,6 +145,14 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     document.body.style.overflow = "hidden";
   }
 
+  function endOf(a, dflt) {
+    try {
+      var t = a.effect.getComputedTiming();
+      var end = typeof t.endTime === "number" ? t.endTime : (t.delay || 0) + (t.duration || 0) * (t.iterations || 1);
+      return end > 0 && isFinite(end) ? end : dflt;
+    } catch (e) { return dflt; }
+  }
+
   function finiteAnims() {
     var list = [];
     try {
@@ -150,10 +163,8 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     return list.filter(function (a) {
       try {
         var t = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming() : null;
-        if (!t) return false;
-        if (t.iterations === Infinity) return false;
-        var end = typeof t.endTime === "number" ? t.endTime : (t.delay || 0) + (t.duration || 0) * (t.iterations || 1);
-        return end > 0 && isFinite(end);
+        if (!t || t.iterations === Infinity) return false;
+        return endOf(a, 0) > 0;
       } catch (e) { return false; }
     });
   }
@@ -171,62 +182,55 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     });
   }
 
-  function seekProgress(p) {
-    p = Math.max(0, Math.min(1, Number(p) || 0));
-    lastProgress = p;
-    if (reduce) {
-      stripAnimClass();
-      return;
-    }
+  function getTimeline() {
     ensureAnimClass();
-    scrubArmed = true;
     var anims = finiteAnims();
     if (!anims.length) {
-      /* Force style recalc then retry once */
-      void document.body.offsetWidth;
+      void document.body.offsetWidth; /* force style recalc, retry once */
       anims = finiteAnims();
     }
     var maxEnd = 0;
-    anims.forEach(function (a) {
-      try {
-        var t = a.effect.getComputedTiming();
-        var end = typeof t.endTime === "number" ? t.endTime : (t.delay || 0) + (t.duration || 0);
-        if (end > maxEnd) maxEnd = end;
-      } catch (e) {}
-    });
-    if (!maxEnd) maxEnd = STORY_MS;
-    anims.forEach(function (a) {
+    anims.forEach(function (a) { var e = endOf(a, 0); if (e > maxEnd) maxEnd = e; });
+    return { anims: anims, end: maxEnd || STORY_MS };
+  }
+
+  /* Seek the shared story timeline (keeps prototype beat order) to progress p, floor-clamped */
+  function seekTo(p) {
+    p = Math.max(0, Math.min(1, Number(p) || 0));
+    lastProgress = p;
+    if (reduce) { stripAnimClass(); return; }
+    var tl = getTimeline();
+    if (!tl.anims.length) { stripAnimClass(); return; } /* nothing to drive → static readable end */
+    var eff = FLOOR + (1 - FLOOR) * p;
+    var t = eff * tl.end;
+    tl.anims.forEach(function (a) {
       try {
         a.pause();
-        var t = a.effect.getComputedTiming();
-        var end = typeof t.endTime === "number" ? t.endTime : maxEnd;
-        if (!end || !isFinite(end)) end = maxEnd;
-        a.currentTime = p * end;
+        a.currentTime = Math.min(t, endOf(a, tl.end));
       } catch (e) {}
     });
   }
 
-  function playOnce() {
+  /* Self-driven: play the finite timeline once from the floor to its end frame, then hold */
+  function autoPlay() {
+    if (mode === "scrub") return;
+    mode = "auto";
     if (reduce) { stripAnimClass(); return; }
-    /* Fallback when parent has no scrub: one-shot, no timer loop */
-    stripAnimClass();
-    void document.body.offsetWidth;
-    ensureAnimClass();
-    playedOnce = true;
-    finiteAnims().forEach(function (a) {
-      try { a.play(); } catch (e) {}
-    });
+    seekTo(0);
+    var tl = getTimeline();
+    if (!tl.anims.length) { stripAnimClass(); return; }
+    tl.anims.forEach(function (a) { try { a.play(); } catch (e) {} });
     if (window.parent !== window) {
       try { parent.postMessage({ source: "iv-embed", type: "iv-anim-played", id: location.pathname }, "*"); } catch (e) {}
     }
   }
 
-  function reset() {
-    scrubArmed = false;
-    playedOnce = false;
-    stripAnimClass();
-    void document.body.offsetWidth;
-    lastProgress = 0;
+  function enterScrub() {
+    if (mode !== "scrub") {
+      mode = "scrub";
+      if (fallbackTimer) { clearTimeout(fallbackTimer); fallbackTimer = 0; }
+    }
+    if (announceTimer) { clearInterval(announceTimer); announceTimer = 0; }
   }
 
   function announce() {
@@ -242,13 +246,13 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     } catch (e) {}
   }
 
+  /* Initial frame = floor (readable), paused */
   if (reduce) {
     stripAnimClass();
   } else {
-    /* Start at 0 (paused) so first scrub frame is start state */
     ensureAnimClass();
     void document.body.offsetWidth;
-    seekProgress(0);
+    seekTo(0);
   }
 
   applyScale(window.innerWidth || DESIGN_W);
@@ -257,33 +261,37 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     var d = ev.data;
     if (!d || d.source !== "iv-parent") return;
     if (d.type === "iv-anim-scrub" && typeof d.progress === "number") {
-      seekProgress(d.progress);
+      enterScrub();
+      seekTo(d.progress);
     } else if (d.type === "iv-anim-play") {
-      if (!scrubArmed) playOnce();
+      if (mode !== "scrub") {
+        if (fallbackTimer) { clearTimeout(fallbackTimer); fallbackTimer = 0; }
+        mode = "boot";
+        autoPlay();
+      }
     } else if (d.type === "iv-anim-reset") {
-      reset();
-      seekProgress(0);
+      enterScrub();
+      seekTo(0);
     } else if (d.type === "iv-anim-resize" && (d.width || d.w)) {
+      parentSized = true;
       applyScale(d.width || d.w);
-      seekProgress(lastProgress);
+      if (mode === "scrub") seekTo(lastProgress);
     }
   });
 
+  /* Fluid scale without bridge: iframe's own width */
   window.addEventListener("resize", function () {
-    if (window.parent === window) applyScale(window.innerWidth);
+    if (!parentSized || window.parent === window) applyScale(window.innerWidth);
   });
 
   if (window.parent !== window) {
     announce();
-    setInterval(function () { announce(); }, 1200);
+    announceTimer = setInterval(announce, 1200);
+    /* No-bridge fallback: no scrub/play within BRIDGE_WAIT_MS → self-drive once to end frame */
+    fallbackTimer = setTimeout(function () { fallbackTimer = 0; if (mode === "boot") autoPlay(); }, BRIDGE_WAIT_MS);
   } else {
-    /* Standalone open: scrub via scroll for local QA */
-    function localScrub() {
-      var h = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      seekProgress(h ? window.scrollY / h : 0);
-    }
-    window.addEventListener("scroll", localScrub, { passive: true });
-    playOnce();
+    /* Standalone open (no parent): self-drive immediately */
+    autoPlay();
   }
 })();
 </script>

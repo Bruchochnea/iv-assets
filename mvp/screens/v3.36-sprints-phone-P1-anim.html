@@ -98,7 +98,7 @@
 <filter id="L14gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L14b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L14sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g mask="url(#L14k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/></g></g><g transform="rotate(-8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L14h)" mask="url(#L14sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L14s)" mask="url(#L14sm)"/><g transform="translate(-5 -3)"><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></g></svg></div></div></div></div>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge: CSS @keyframes .anim play on parent postMessage (Framer iframes). */
+  /* IV parent↔embed anim bridge r4 Soft Soft-clear */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   if (!nodes.length) return;
@@ -121,13 +121,21 @@
     if (played) return;
     played = true;
     nodes.forEach(function (el) {
-      void el.offsetWidth; /* reflow so keyframes restart from 0 */
+      el.classList.remove("anim");
+      void el.offsetWidth;
       el.classList.add("anim");
       el.setAttribute("data-anim-played", "1");
     });
+    if (window.parent !== window) {
+      try { parent.postMessage({ source: "iv-embed", type: "iv-anim-played", id: location.pathname }, "*"); } catch (e) {}
+    }
   }
 
-  /* Pause timelines on load (not fill-mode end). */
+  function announce() {
+    if (window.parent === window) return;
+    try { parent.postMessage({ source: "iv-embed", type: "iv-anim-ready", id: location.pathname }, "*"); } catch (e) {}
+  }
+
   strip();
 
   window.addEventListener("message", function (ev) {
@@ -138,9 +146,9 @@
   });
 
   if (window.parent !== window) {
-    parent.postMessage({ source: "iv-embed", type: "iv-anim-ready", id: location.pathname }, "*");
+    announce();
+    setInterval(function () { if (!played) announce(); }, 800);
   } else {
-    /* Standalone asset Preview: play immediately. */
     play();
   }
 })();

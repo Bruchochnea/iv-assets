@@ -319,6 +319,7 @@ html{background:#000}
   var F_A = 0.728; /* share of the merged pin played at lock speed (2.675vh of 3.675vh); rest = beats lc 1.128s -> 6s */
   var S1_SRC = MOB ? "../../screens/r5c/v3.31-creative-A-orange-phone-anim.html" : "../../screens/r5c/v3.31-creative-A-orange-desktop-anim.html";
   var pin = { on: false, merge: false, visH: DH, pad: 0 };
+  var MAX_CROP = 0.1; /* r5f: pin stage crops at most 10% of the hero bottom (1920x1080 = exactly 10%) */
   var ORANGE = [241, 157, 56];
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var HERO = document.getElementById("hero");
@@ -414,14 +415,16 @@ html{background:#000}
     var de = document.documentElement, bs = document.body.style;
     var s;
     if (pin.on) {
-      s = pw / DW;
-      var visH = Math.max(1, ph / s), pad = Math.max(0, (visH - DH) / 2);
+      /* width-fit, but never crop more than MAX_CROP of the design height (wide 16:9 windows): beyond that, fit
+         height and centre with hero-black side gutters */
+      s = Math.min(pw / DW, ph / (DH * (1 - MAX_CROP)));
+      var visH = Math.max(1, ph / s), pad = Math.max(0, (visH - DH) / 2), ox = Math.max(0, (pw - DW * s) / 2);
       pin.visH = visH; pin.pad = pad;
-      fit = { s: s, ox: 0, oy: 0, fw: pw, fh: ph };
+      fit = { s: s, ox: ox, oy: 0, fw: pw, fh: ph };
       de.style.width = pw + "px"; de.style.height = ph + "px"; de.style.overflow = "hidden";
       bs.margin = "0"; bs.width = DW + "px"; bs.height = Math.max(DH + pad, visH) + "px"; bs.overflow = "hidden"; bs.position = "relative";
       bs.boxSizing = "border-box"; bs.paddingTop = pad + "px";
-      bs.transformOrigin = "0 0"; bs.transform = "scale(" + s + ")";
+      bs.transformOrigin = "0 0"; bs.transform = "translate(" + ox + "px,0) scale(" + s + ")";
       /* overlay covers the whole visible stage; crew layer stays aligned with #hero */
       setBox(Z, 0, visH); setBox(ZK, 0, visH); setBox(ZO, 0, visH); setBox(ZC, pad, DH);
       if (ZB) { setBox(ZB, 0, visH); if (s1f) { s1f.style.height = visH + "px"; postS1({ type: "iv-anim-resize", width: DW, height: Math.round(visH) }); } }

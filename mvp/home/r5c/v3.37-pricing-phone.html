@@ -312,12 +312,15 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 
 <script>
 (function () {
-  /* IV embed r5c fit — fixed-390 composition scales DOWN to the frame width (never cropped, never scaled up);
-     wider frames centre it. No internal scrollbars; html height = true content height × scale. */
+  /* IV embed r5c fit — fixed-390 composition scales DOWN to the frame (never cropped, never scaled up):
+     s = min(1, width/390, frameH/defaultContentH); wider frames centre it (gutters = section bg).
+     No internal scrollbars. If the user expands content past the frame (#hl "More challenges") and the parent
+     doesn't auto-size the iframe (bridge V5 IV_EMBED_AUTOHEIGHT), the frame scrolls internally with the
+     scrollbar hidden instead of clipping. Posts {iv-embed-height} = wanted height at the width scale. */
   var DW = 390;
   var root = document.querySelector("body > section") || document.body.firstElementChild;
   var de = document.documentElement, b = document.body;
-  var lastH = -1;
+  var lastPost = -1, defaultH = 0, touched = false;
   function contentH() {
     var h = 0;
     Array.prototype.forEach.call(b.children, function (el) {
@@ -330,8 +333,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   }
   function apply() {
     var w = window.innerWidth || DW;
-    var s = Math.min(1, w / DW);
-    var ox = Math.max(0, (w - DW * s) / 2);
+    var ih = window.innerHeight || 0;
     b.style.margin = "0";
     b.style.width = DW + "px";
     b.style.maxWidth = DW + "px";
@@ -339,23 +341,33 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     b.style.minHeight = "0";
     b.style.overflow = "hidden";
     b.style.transformOrigin = "0 0";
-    b.style.transform = s === 1 && ox === 0 ? "" : "translate(" + ox + "px,0) scale(" + s + ")";
     var h = contentH();
-    de.style.overflow = "hidden";
+    if (!touched || !defaultH) defaultH = h;
+    var sw = Math.min(1, w / DW);
+    var s = sw;
+    if (ih > 200 && defaultH * sw > ih + 1) s = Math.min(sw, ih / defaultH);
+    var ox = Math.max(0, (w - DW * s) / 2);
+    b.style.transform = s === 1 && ox === 0 ? "" : "translate(" + ox + "px,0) scale(" + s + ")";
+    var outH = Math.ceil(h * s);
     de.style.width = w + "px";
-    de.style.height = Math.ceil(h * s) + "px";
+    de.style.height = outH + "px";
+    var over = ih > 200 && outH > ih + 1;
+    de.style.setProperty("overflow-x", "hidden", "important");
+    de.style.setProperty("overflow-y", over ? "auto" : "hidden", "important");
     var bg = getComputedStyle(b).backgroundColor;
     if (root) { var rb = getComputedStyle(root.firstElementChild || root).backgroundColor; if (rb && rb !== "rgba(0, 0, 0, 0)") bg = rb; }
     if (bg && bg !== "rgba(0, 0, 0, 0)") de.style.background = bg;
-    var outH = Math.ceil(h * s);
-    if (outH !== lastH) {
-      lastH = outH;
-      window.__ivFit = { scale: s, contentH: h, frameH: outH, width: w };
+    var want = Math.ceil(h * sw);
+    window.__ivFit = { scale: s, widthScale: sw, contentH: h, defaultH: defaultH, frameH: outH, wantH: want, width: w, internalScroll: over };
+    if (want !== lastPost) {
+      lastPost = want;
       if (window.parent !== window) {
-        try { parent.postMessage({ source: "iv-embed", type: "iv-embed-height", id: location.pathname, height: outH, scale: s }, "*"); } catch (e) {}
+        try { parent.postMessage({ source: "iv-embed", type: "iv-embed-height", id: location.pathname, height: want, scale: sw }, "*"); } catch (e) {}
       }
     }
   }
+  document.addEventListener("click", function () { touched = true; setTimeout(apply, 0); }, true);
+  document.addEventListener("keydown", function () { touched = true; }, true);
   window.addEventListener("resize", apply);
   if ("ResizeObserver" in window && root) new ResizeObserver(function () { apply(); }).observe(root);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);

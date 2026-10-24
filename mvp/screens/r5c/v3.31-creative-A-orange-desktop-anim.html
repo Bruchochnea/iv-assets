@@ -62,7 +62,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 <filter id="L4gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L4b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L4sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="75.0" cy="50.0" r="19" fill="#fff"/><circle cx="62.5" cy="71.7" r="19" fill="#fff"/><circle cx="37.5" cy="71.7" r="19" fill="#fff"/><circle cx="25.0" cy="50.0" r="19" fill="#fff"/><circle cx="37.5" cy="28.3" r="19" fill="#fff"/><circle cx="62.5" cy="28.3" r="19" fill="#fff"/><circle cx="50" cy="50" r="28" fill="#fff"/></mask></defs><g mask="url(#L4k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><circle cx="75.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="62.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="37.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="25.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="37.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="62.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="50" cy="50" r="28" fill="#895CF5"/></g></g><g transform="rotate(-8 50 50)"><circle cx="75.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="62.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="37.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="25.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="37.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="62.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="50" cy="50" r="28" fill="#895CF5"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L4h)" mask="url(#L4sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L4s)" mask="url(#L4sm)"/><rect x="40.0" y="40.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="40.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></div></div></div></div></div></div><script>(function(){var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)return;document.querySelectorAll('.anim').forEach(function(el){el.classList.remove('anim')});document.querySelectorAll('.mvw').forEach(function(el){el.classList.add('fin')});})();</script>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r5c — scroll-progress scrub (bridge V5) + no-bridge fallback + fit scale (never clip) */
+  /* IV parent↔embed anim bridge r5c/r5d — scroll-progress scrub (bridge V5) + no-bridge fallback + fit scale (never clip) */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var DESIGN_W = 1440;
   var DESIGN_H = 900;
@@ -71,7 +71,15 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   var FLOOR = 0;
   /* Lock zoom-fade hand-off (s1 only): orange veil over the board at entry, fades as the section rises */
   var VEIL = true;
-  var VEIL_FROM = 0.50, VEIL_TO = 0.78, BEATS_FROM = 0.58;
+  /* r5d: v3.31 setSwirl card entrance, mapped on this section's p (== hero p at 1440; ~hero p at 405):
+     swirl p = p / Z_END; c = (swirl p − 0.924) / 0.552  (rec331: c0 = z1 − 0.11s, c1 = c0 + 0.8s over the 1.45s swirl);
+     card opacity AE(c/.7), translateY (36 desktop / 24 phone)·(1 − AE(c)), AE = cubic-bezier(.16,1,.3,1).
+     Beats start at swirl p .828 (rec331 lc0 = z1 − 0.25s) and still finish when parked. */
+  var Z_END = 0.55, C0 = 0.924, CD = 0.552, BEATS_FROM = Z_END * 0.828;
+  var SETTLE = DESIGN_W === 390 ? 24 : 36;
+  var cardY = 0;
+  var bz = function (x1, y1, x2, y2) { return function (t) { if (t <= 0) return 0; if (t >= 1) return 1; var lo = 0, hi = 1, u = t; for (var i = 0; i < 30; i++) { u = (lo + hi) / 2; var x = 3 * (1 - u) * (1 - u) * u * x1 + 3 * (1 - u) * u * u * x2 + u * u * u; if (x < t) lo = u; else hi = u; } return 3 * (1 - u) * (1 - u) * u * y1 + 3 * (1 - u) * u * u * y2 + u * u * u; }; };
+  var AE = bz(.16, 1, .3, 1);
   var BRIDGE_WAIT_MS = 1200;
   var nodes = Array.prototype.slice.call(document.querySelectorAll(".anim"));
   var lastProgress = 0;
@@ -114,7 +122,8 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     document.body.style.width = DESIGN_W + "px";
     document.body.style.height = DESIGN_H + "px";
     document.body.style.transformOrigin = "0 0";
-    document.body.style.transform = "translate(" + ox + "px," + oy + "px) scale(" + s + ")";
+    lastFit = { ox: ox, oy: oy, s: s };
+    document.body.style.transform = "translate(" + ox + "px," + (oy + cardY * s) + "px) scale(" + s + ")";
     document.body.style.overflow = "hidden";
     document.body.style.background = "transparent";
   }
@@ -173,6 +182,13 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     return t * t * (3 - 2 * t);
   }
 
+  var lastFit = null;
+  function setCardY(y) {
+    if (Math.abs(y - cardY) < 0.01) return;
+    cardY = y;
+    if (lastFit) document.body.style.transform = "translate(" + lastFit.ox + "px," + (lastFit.oy + cardY * lastFit.s) + "px) scale(" + lastFit.s + ")";
+  }
+
   function setVeil(o) {
     if (!VEIL) return;
     if (!veilEl) {
@@ -192,10 +208,13 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     if (reduce) { setVeil(0); stripAnimClass(); return; }
     var q = p;
     if (VEIL && veilArmed && heroZoom && mode === "scrub") {
-      setVeil(1 - smooth(VEIL_FROM, VEIL_TO, p));
+      var c = Math.max(0, Math.min(1, (p / Z_END - C0) / CD));
+      setVeil(1 - AE(Math.min(1, c / .7)));
+      setCardY(SETTLE * (1 - AE(c)));
       q = Math.max(0, (p - BEATS_FROM) / (1 - BEATS_FROM));
     } else {
       setVeil(0);
+      setCardY(0);
     }
     var tl = getTimeline();
     if (!tl.anims.length) { stripAnimClass(); return; }

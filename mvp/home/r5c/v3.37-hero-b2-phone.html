@@ -298,137 +298,122 @@ html{background:#000}
 </script>
 <script>
 (function () {
-  /* IV hero r5c — Bruce lock zoom-fade (orange crew zooms to fill, solid orange meets s1), driven by bridge V5
-     iv-anim-scrub {role:"hero"}; fit scale (never crop); no bridge = normal hero; reduced motion = no zoom. */
-  var DW = 390, DH = 912, TX = 0.5, K1 = 2.4;
+  /* IV hero r5d — 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
+     sideways whoosh, orange rides the orbit and pushes to camera only after p > .45, ZK dim, ZO flat).
+     Source: /workspace/iv-site-build/ui-v3/full/v3.31-home-{desktop,phone}.html (setSwirl + setup + helpers, verbatim math).
+     Driven by bridge V5 {iv-anim-scrub, role:"hero"}: swirl p = clamp(heroP / Z_END). Scrubs both ways.
+     Deviations (Framer can't pin the hero): push target = centre of the hero's on-screen part (not the fixed viewport);
+     the s1 card entrance (c, AE, +36/+24px) runs inside the s1 embed (veil), not in this frame.
+     No bridge = normal hero; reduced motion = static (no swirl). */
+  var DW = 390, DH = 912, MOB = true;
+  var Z_END = 0.55; /* hero p at which swirl p reaches 1 (orange flat solid) — see mapping doc */
   var ORANGE = [241, 157, 56];
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var hero = document.getElementById("hero");
-  if (!hero) return;
-  var inner = hero.firstElementChild;
-  var crews = Array.prototype.slice.call(hero.querySelectorAll(".crew"));
-  var orange = null;
-  crews.forEach(function (c) { if (!orange && /#F19D38/i.test(c.innerHTML)) orange = c; });
-  var others = crews.filter(function (c) { return c !== orange; });
-  var bars = inner ? inner.firstElementChild : null;
-  if (bars && bars.classList && bars.classList.contains("crew")) bars = null;
-  var text = null;
-  Array.prototype.forEach.call(inner ? inner.children : [], function (el) {
-    if (!text && el.getAttribute("style") === "position:relative") text = el;
-  });
-  var logos = hero.querySelector(".lg");
-  var bob = orange ? orange.querySelector(".bob") : null;
-  var osvg = orange ? orange.querySelector("svg") : null;
+  var HERO = document.getElementById("hero");
+  if (!HERO) return;
 
-  /* Orange crew geometry (stage px) */
-  var oL = orange ? parseFloat(orange.style.left) || 0 : 0;
-  var oT = orange ? parseFloat(orange.style.top) || 0 : 0;
-  var sw = osvg ? parseFloat(osvg.getAttribute("width")) || 100 : 100;
-  var sh = osvg ? parseFloat(osvg.getAttribute("height")) || 115 : 115;
-  var lcx = sw * 0.5, lcy = sh * (58 / 115); /* viewBox -0 -8 100 115, circle (50,50) r42 */
-  var r0 = sw * 0.42;
-  var restX = oL + lcx, restY = oT + lcy;
-  var otherRest = others.map(function (c) {
-    var s = c.querySelector("svg");
-    var w = s ? parseFloat(s.getAttribute("width")) || 100 : 100, h = s ? parseFloat(s.getAttribute("height")) || 115 : 115;
-    return { x: (parseFloat(c.style.left) || 0) + w / 2, y: (parseFloat(c.style.top) || 0) + h / 2 };
-  });
+  /* overlay = original #zoom (position:fixed in v3.31; here absolute on the scaled stage) */
+  var Z = document.createElement("div");
+  Z.id = "zoom";
+  Z.setAttribute("aria-hidden", "true");
+  Z.style.cssText = "position:absolute;left:0;top:0;width:" + DW + "px;height:" + DH + "px;overflow:hidden;z-index:50;display:none;pointer-events:none";
+  Z.innerHTML = '<div id=zk style="position:absolute;left:0;top:0;width:' + DW + 'px;height:' + DH + 'px;background:#000;opacity:0"></div>' +
+    '<div id=zc style="position:absolute;z-index:1;left:0;top:0;width:' + DW + 'px;height:' + DH + 'px"></div>' +
+    '<div id=zo style="position:absolute;z-index:2;left:0;top:0;width:' + DW + 'px;height:' + DH + 'px;background:#F19D38;opacity:0"></div>';
+  document.body.appendChild(Z);
+  var ZC = document.getElementById("zc"), ZO = document.getElementById("zo"), ZK = document.getElementById("zk"), ZB = null;
 
-  var flood = document.createElement("div");
-  flood.id = "ivFlood";
-  flood.setAttribute("aria-hidden", "true");
-  flood.style.cssText = "position:absolute;left:0;top:0;width:" + DW + "px;height:" + DH + "px;background:rgb(" + ORANGE.join(",") + ");opacity:0;z-index:60;pointer-events:none";
-  if (inner) inner.appendChild(flood);
+  /* ---- verbatim helpers from v3.31 ---- */
+  var cl = function (x, a, b) { if (a === undefined) a = 0; if (b === undefined) b = 1; return Math.min(b, Math.max(a, x)); };
+  var ss = function (a, b, x) { x = cl((x - a) / (b - a)); return x * x * (3 - 2 * x); };
+  var sio = function (x) { return (1 - Math.cos(Math.PI * cl(x))) / 2; };
+  var eio3 = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  var B = null;
+  var TGY = null; /* push target y (stage px); null = original VH*TY */
 
+  function setup() {
+    var els = Array.prototype.slice.call(HERO.querySelectorAll(".bob")).map(function (b) { return b.parentElement; });
+    B = els.map(function (el, i) {
+      var L = 0, T = 0;
+      for (var e = el; e && e !== HERO; e = e.offsetParent) { L += e.offsetLeft; T += e.offsetTop; }
+      var sv = el.querySelector("svg"), s = +sv.getAttribute("width");
+      var c = el.cloneNode(true); c.firstElementChild.className = ""; c.firstElementChild.style.animation = "none";
+      c.style.cssText = "position:absolute;left:" + L + "px;top:" + T + "px;transform-origin:0 0;z-index:" + (10 + i); ZC.appendChild(c);
+      var orange = /fill="#F19D38"/i.test(sv.innerHTML.replace(/stop-color="#F19D38"/ig, ""));
+      return { el: el, c: c, "in": c.firstElementChild, L: L, T: T, s: s, cx: L + .5 * s, cy: T + .58 * s, orange: orange, halo: c.querySelector("svg > circle[filter]"), i: i };
+    });
+    var n = B.length, C = { x: B.reduce(function (a, b) { return a + b.cx; }, 0) / n, y: B.reduce(function (a, b) { return a + b.cy; }, 0) / n };
+    B.forEach(function (b) { var dx = b.cx - C.x, dy = (b.cy - C.y) / .5; b.r = Math.hypot(dx, dy); b.th = Math.atan2(dy, dx); }); B.C = C;
+  }
+
+  /* ---- window.setSwirl(p, c, mob): v3.31 math 1:1 (only VH*TY → TGY when the hero is scrolled) ---- */
+  function setSwirl(p, c, mob) {
+    if (!B) setup();
+    var VW = mob ? 390 : 1440, VH = mob ? 844 : 900, KE = mob ? 90 : 42, TY = mob ? .42 : .5;
+    if (p <= 0) { Z.style.display = "none"; B.forEach(function (b) { b.el.style.opacity = ""; }); HERO.style.transform = ""; HERO.style.opacity = ""; return; }
+    if (c >= 1) { Z.style.display = "none"; return; }
+    Z.style.display = "block"; B.forEach(function (b) { b.el.style.opacity = 0; });
+    var A = 2 * Math.PI * .6 * sio(p), Rin = 1 - .35 * sio(p / .55), u = cl((p - .45) / .55), uo = u;
+    var hs = ss(.25, 1, p); ZK.style.opacity = .5 * hs;
+    var tgy = TGY === null ? VH * TY : TGY;
+    for (var j = 0; j < B.length; j++) {
+      var b = B[j];
+      var th = b.th + A, ty0 = (function () { var m = getComputedStyle(b.el.firstElementChild).transform; return m && m !== "none" ? +m.split(",")[5].replace(")", "") : 0; })();
+      var bobK = 1 - ss(0, .35, p);
+      b["in"].style.transform = "translateY(" + (ty0 * bobK) + "px)";
+      var zd = Math.sin(th) - Math.sin(b.th), kd = 1 + .16 * zd;
+      if (!b.orange) {
+        var R = Rin * (1 + 1.8 * uo * uo), x = B.C.x + b.r * R * Math.cos(th), y = B.C.y + b.r * R * .5 * Math.sin(th), k = kd * (1 - .3 * uo);
+        b.c.style.transform = "translate(" + (x - k * .5 * b.s - b.L) + "px," + (y - k * .58 * b.s - b.T) + "px) scale(" + k + ")";
+        b.c.style.opacity = 1 - ss(.5, .92, p); b.c.style.zIndex = 20 + Math.round(Math.sin(th) * 10);
+      } else {
+        var x2 = B.C.x + b.r * Rin * Math.cos(th), y2 = B.C.y + b.r * Rin * .5 * Math.sin(th);
+        var ax = .60 * b.s, ay = .74 * b.s, cx = .5 * b.s, cy = .58 * b.s;
+        var bb = eio3(u), kz = (kd * (1 - bb) + 1.16 * bb) * Math.pow(KE, u * u);
+        var px = x2 + kd * (ax - cx), py = y2 + kd * (ay - cy), Px = px + (VW / 2 - px) * bb, Py = py + (tgy - py) * bb;
+        b.c.style.transform = "translate(" + (Px - kz * ax - b.L) + "px," + (Py - kz * ay - b.T) + "px) scale(" + kz + ")";
+        b.c.style.zIndex = u > 0 ? 60 : 20 + Math.round(Math.sin(th) * 10); b.c.style.opacity = 1;
+        if (b.halo) b.halo.style.opacity = 1 - ss(0, .45, u);
+      }
+    }
+    ZO.style.opacity = ss(.9, .98, u);
+    if (ZB) { /* s1 card entrance lives in the s1 embed (Framer stacks sections) */ }
+    ZC.style.visibility = u >= .98 ? "hidden" : "visible";
+  }
+  window.setSwirl = setSwirl;
+
+  /* ---- fit scale (never crop) ---- */
   var fit = { s: 1, ox: 0, oy: 0, fw: DW, fh: DH };
-  var parentW = 0;
-  var last = { p: 0, rectTop: null, vh: null, topbar: 78 };
-  var seenV5 = false;
-  var bobFrozenY = null;
-
+  var parentW = 0, seenV5 = false;
+  var last = { p: 0, rectTop: null, vh: null };
   function applyScale() {
     var pw = Math.max(1, parentW || window.innerWidth || DW);
     var ph = window.innerHeight || 0;
-    var swr = pw / DW;
-    var s = swr;
+    var swr = pw / DW, s = swr;
     if (ph > DH * swr * 0.3) s = Math.min(swr, ph / DH);
     var fh = ph > DH * swr * 0.3 ? ph : DH * s;
-    var ox = Math.max(0, (pw - DW * s) / 2);
-    fit = { s: s, ox: ox, oy: 0, fw: pw, fh: fh };
+    fit = { s: s, ox: Math.max(0, (pw - DW * s) / 2), oy: 0, fw: pw, fh: fh };
     var de = document.documentElement;
-    de.style.width = pw + "px";
-    de.style.height = fh + "px";
-    de.style.overflow = "hidden";
-    var b = document.body.style;
-    b.margin = "0"; b.width = DW + "px"; b.height = DH + "px"; b.overflow = "hidden";
-    b.transformOrigin = "0 0";
-    b.transform = "translate(" + ox + "px,0) scale(" + s + ")";
+    de.style.width = pw + "px"; de.style.height = fh + "px"; de.style.overflow = "hidden";
+    var bs = document.body.style;
+    bs.margin = "0"; bs.width = DW + "px"; bs.height = DH + "px"; bs.overflow = "hidden"; bs.position = "relative";
+    bs.transformOrigin = "0 0"; bs.transform = "translate(" + fit.ox + "px,0) scale(" + s + ")";
     render(last.p);
   }
 
-  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
-  function smooth(a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
-  function lerp(a, b, t) { return a + (b - a) * t; }
-
-  function bobY() {
-    if (!bob) return 0;
-    try {
-      var m = getComputedStyle(bob).transform;
-      if (m && m !== "none") { var v = m.match(/matrix\(([^)]+)\)/); if (v) return parseFloat(v[1].split(",")[5]) || 0; }
-    } catch (e) {}
-    return 0;
-  }
-
-  function reset() {
-    if (orange) { orange.style.transform = ""; orange.style.transformOrigin = ""; orange.style.zIndex = ""; orange.style.willChange = ""; }
-    if (bob) bob.style.animationPlayState = "";
-    bobFrozenY = null;
-    others.forEach(function (c) { c.style.transform = ""; c.style.opacity = ""; });
-    if (bars) bars.style.opacity = "";
-    if (text) text.style.opacity = "";
-    if (logos) logos.style.opacity = "";
-    flood.style.opacity = "0";
-    document.documentElement.style.background = "#000";
-  }
-
-  function render(p) {
-    p = clamp(Number(p) || 0, 0, 1);
-    if (reduce || !orange || p <= 0.0005) { reset(); return; }
-    /* Visible part of the hero frame (iframe px) → stage px */
-    var tb = typeof last.topbar === "number" ? last.topbar : 78;
-    var rectTop = typeof last.rectTop === "number" ? last.rectTop : -p * (fit.fh - tb);
-    var vh = typeof last.vh === "number" ? last.vh : fit.fh;
-    var vtF = clamp(tb - rectTop, 0, fit.fh), vbF = clamp(vh - rectTop, vtF + 1, fit.fh);
-    var vt = clamp((vtF - fit.oy) / fit.s, 0, DH), vb = clamp((vbF - fit.oy) / fit.s, vt + 1, DH);
-
-    var a = smooth(0.0, 0.40, p);   /* travel to centre + first grow (lock 2.3→2.8s) */
-    var b = smooth(0.30, 0.62, p);  /* zoom through to cover (lock 2.8→3.0s) */
-    var f = smooth(0.54, 0.68, p);  /* solid orange (lock 3.0→3.05s) */
-    var tx = DW * TX, ty = vt + (vb - vt) * 0.46;
-    var cx = lerp(restX, tx, a), cy = lerp(restY, ty, a);
-    var R = Math.sqrt(Math.pow(Math.max(cx, DW - cx), 2) + Math.pow(Math.max(cy - vt, vb - cy), 2)) * 1.12;
-    var kc = Math.max(K1 * 1.01, R / r0);
-    var k = Math.exp(Math.log(K1) * a + (Math.log(kc) - Math.log(K1)) * b);
-
-    if (bobFrozenY === null) { bobFrozenY = bobY(); if (bob) bob.style.animationPlayState = "paused"; }
-    orange.style.willChange = "auto";
-    orange.style.zIndex = "55";
-    orange.style.transformOrigin = lcx + "px " + (lcy + bobFrozenY) + "px";
-    orange.style.transform = "translate(" + (cx - restX).toFixed(2) + "px," + (cy - restY).toFixed(2) + "px) scale(" + k.toFixed(4) + ")";
-
-    others.forEach(function (c, i) {
-      var o = otherRest[i];
-      var dx = o.x - tx, dy = o.y - ty, d = Math.sqrt(dx * dx + dy * dy) || 1;
-      var push = (DW / 1440 * 0.6 + 0.4) * 160 * a + 260 * b;
-      c.style.transform = "translate(" + (dx / d * push).toFixed(1) + "px," + (dy / d * push).toFixed(1) + "px) scale(" + (1 - 0.35 * a).toFixed(3) + ")";
-      c.style.opacity = String(((1 - 0.6 * a) * (1 - b)).toFixed(3));
-    });
-    if (bars) bars.style.opacity = String((1 - 0.5 * a).toFixed(3));
-    if (text) text.style.opacity = String(((1 - 0.45 * a) * (1 - 0.8 * b)).toFixed(3));
-    if (logos) logos.style.opacity = String((1 - smooth(0.02, 0.3, p)).toFixed(3));
-    flood.style.opacity = f.toFixed(3);
-    var g = function (i) { return Math.round(ORANGE[i] * f); };
-    document.documentElement.style.background = "rgb(" + g(0) + "," + g(1) + "," + g(2) + ")";
+  function render(hp) {
+    hp = cl(Number(hp) || 0);
+    var zp = reduce ? 0 : cl(hp / Z_END);
+    /* centre of the on-screen part of the hero (stage px); at page top this is exactly VH*TY of the original */
+    if (typeof last.rectTop === "number" && typeof last.vh === "number") {
+      var vtF = cl(-last.rectTop, 0, fit.fh), vbF = cl(last.vh - last.rectTop, vtF + 1, fit.fh);
+      var vt = (vtF - fit.oy) / fit.s, vb = (vbF - fit.oy) / fit.s;
+      var TY = MOB ? .42 : .5, VH = MOB ? 844 : 900;
+      TGY = last.rectTop >= 0 && vb - vt >= VH - 1 ? VH * TY : vt + Math.min(vb - vt, VH) * TY;
+    } else TGY = null;
+    setSwirl(zp, 0, MOB);
+    var f = zp > 0 ? +ZO.style.opacity || 0 : 0;
+    document.documentElement.style.background = "rgb(" + Math.round(ORANGE[0] * f) + "," + Math.round(ORANGE[1] * f) + "," + Math.round(ORANGE[2] * f) + ")";
   }
 
   window.addEventListener("message", function (ev) {
@@ -439,7 +424,6 @@ html{background:#000}
       last.p = d.progress;
       last.rectTop = typeof d.rectTop === "number" ? d.rectTop : null;
       last.vh = typeof d.vh === "number" ? d.vh : null;
-      if (typeof d.topbar === "number") last.topbar = d.topbar;
       render(last.p);
     } else if (d.type === "iv-anim-resize" && (d.width || d.w)) {
       parentW = Number(d.width || d.w) || 0;
@@ -454,7 +438,7 @@ html{background:#000}
     try { parent.postMessage({ source: "iv-embed", type: "iv-anim-ready", role: "hero", id: location.pathname, designW: DW, designH: DH }, "*"); } catch (e) {}
   }
   if (window.parent !== window) { announce(); annT = setInterval(announce, 1200); }
-  window.__ivHeroZoom = { render: function (p) { last.p = p; last.rectTop = null; last.vh = null; render(p); }, fit: function () { return fit; } };
+  window.__ivHeroSwirl = { render: function (hp) { last.p = hp; last.rectTop = null; last.vh = null; render(hp); }, zEnd: Z_END };
 })();
 
 </script>

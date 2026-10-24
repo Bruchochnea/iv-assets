@@ -321,7 +321,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
   var DW = 390;
   var root = document.querySelector("body > section") || document.body.firstElementChild;
   var de = document.documentElement, b = document.body;
-  var lastPost = -1, defaultH = 0, touched = false;
+  var lastPost = -1, defaultH = 0, touched = false, baseFrame = 0;
   function contentH() {
     var h = 0;
     Array.prototype.forEach.call(b.children, function (el) {
@@ -358,9 +358,14 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     var bg = getComputedStyle(b).backgroundColor;
     if (root) { var rb = getComputedStyle(root.firstElementChild || root).backgroundColor; if (rb && rb !== "rgba(0, 0, 0, 0)") bg = rb; }
     if (bg && bg !== "rgba(0, 0, 0, 0)") de.style.background = bg;
-    var want = Math.ceil(h * sw);
+    /* r5g: never ask the parent to grow the frame for the default (collapsed) layout: the Framer section wrapper
+       clips a taller iframe, so the default fits the frame (scale-down, same-bg gutters). Ask only when the user
+       expanded content past its default height (#hl More), and ask for the original frame height on collapse. */
+    var grown = touched && h > defaultH + 1;
+    if (!grown && lastPost === -1 && ih > 200) baseFrame = ih;
+    var want = grown || !baseFrame ? Math.ceil(h * sw) : baseFrame;
     window.__ivFit = { scale: s, widthScale: sw, contentH: h, defaultH: defaultH, frameH: outH, wantH: want, width: w, internalScroll: over };
-    if (want !== lastPost) {
+    if (want !== lastPost && (grown || lastPost !== -1)) {
       lastPost = want;
       if (window.parent !== window) {
         try { parent.postMessage({ source: "iv-embed", type: "iv-embed-height", id: location.pathname, height: want, scale: sw }, "*"); } catch (e) {}

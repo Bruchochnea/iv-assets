@@ -101,7 +101,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 <filter id="L14gb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="L14b" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="L14sm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g mask="url(#L14k)" opacity=".14"><g transform="translate(0,206) scale(1,-1)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/></g></g><g transform="rotate(-8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L14h)" mask="url(#L14sm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#L14s)" mask="url(#L14sm)"/><g transform="translate(-5 -3)"><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></g></svg></div></div></div></div>
 <script>
 (function () {
-  /* IV parent↔embed anim bridge r5c/r5d — scroll-progress scrub (bridge V5) + no-bridge fallback + fit scale (never clip) */
+  /* IV parent↔embed anim bridge r5c/r5d/r5e — scroll-progress scrub (bridge V5) + no-bridge fallback + fit scale (never clip) */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var DESIGN_W = 390;
   var DESIGN_H = 844;
@@ -267,6 +267,15 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     });
   }
 
+  function seekMs(ms) {
+    setVeil(0); setCardY(0);
+    if (reduce) { stripAnimClass(); return; }
+    var tl = getTimeline();
+    if (!tl.anims.length) { stripAnimClass(); return; }
+    lastProgress = tl.end > 0 ? Math.max(0, Math.min(1, ms / tl.end)) : 0;
+    tl.anims.forEach(function (a) { try { a.pause(); a.currentTime = Math.min(Math.max(0, ms), endOf(a, tl.end)); } catch (e) {} });
+  }
+
   /* Self-driven: play the finite timeline once from the floor to its end frame, then hold */
   function autoPlay() {
     if (mode === "scrub") return;
@@ -320,7 +329,11 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
     var v = Number(d.bridge) || 0;
     if (v >= 5) seenV5 = true;
     else if (seenV5 && (d.type === "iv-anim-scrub" || d.type === "iv-anim-resize")) return; /* V4 also pasted: V5 wins */
-    if (d.type === "iv-anim-scrub" && typeof d.progress === "number") {
+    if (d.type === "iv-anim-scrub" && typeof d.ms === "number") {
+      /* r5e: nested in the pinned hero (lock #zbox f1z) — absolute board clock in ms, no veil / settle (the hero owns c) */
+      enterScrub();
+      seekMs(d.ms);
+    } else if (d.type === "iv-anim-scrub" && typeof d.progress === "number") {
       enterScrub();
       heroZoom = d.heroZoom === true;
       if (veilArmed === null) {

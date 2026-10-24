@@ -298,15 +298,27 @@ html{background:#000}
 </script>
 <script>
 (function () {
-  /* IV hero r5d — 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
+  /* IV hero r5e (pinned) — r5d 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
      sideways whoosh, orange rides the orbit and pushes to camera only after p > .45, ZK dim, ZO flat).
      Source: /workspace/iv-site-build/ui-v3/full/v3.31-home-{desktop,phone}.html (setSwirl + setup + helpers, verbatim math).
      Driven by bridge V5 {iv-anim-scrub, role:"hero"}: swirl p = clamp(heroP / Z_END). Scrubs both ways.
      Deviations (Framer can't pin the hero): push target = centre of the hero's on-screen part (not the fixed viewport);
      the s1 card entrance (c, AE, +36/+24px) runs inside the s1 embed (veil), not in this frame.
-     No bridge = normal hero; reduced motion = static (no swirl). */
+     No bridge = normal hero; reduced motion = static (no swirl).
+     r5e / bridge V6 PIN MODE ({pinned:true}): the parent pins this iframe (sticky 100vh stage inside a tall
+     "hero-pin" wrapper) and sends progress = wrapper scroll progress. Stage = width-fit, top-anchored (tall stage:
+     centred), push target = VH*TY of the visible stage like the lock. With {merge:true} the stage also carries the
+     lock's #zbox: a nested s1 frame (v3.31 f1z) whose entrance (c) and board beats (lc) run on the SAME clock as the
+     swirl (rec331: z0..z1 = 1.45s, c0 = z1-0.11s, c1 = c0+0.8s, lc0 = z1-0.25s, lc x1.2), then the beats finish
+     compressed over the rest of the pin. The page's own s1 section is hidden in Framer in this mode. */
   var DW = 390, DH = 912, MOB = true;
-  var Z_END = 0.55; /* hero p at which swirl p reaches 1 (orange flat solid) — see mapping doc */
+  var Z_END = 0.55; /* V5 (unpinned) only: hero p at which swirl p reaches 1 */
+  /* V6 pin + merge timeline, in rec331 lock seconds after z0 (tau) and scroll share of the pin */
+  var T_Z = 1.45, T_C0 = 1.34, T_CD = 0.8, T_LC0 = 1.20, LC_RATE = 1.2, LC_END = 6;
+  var T_A = T_C0 + T_CD; /* 2.14s: card settled */
+  var F_A = 0.728; /* share of the merged pin played at lock speed (2.675vh of 3.675vh); rest = beats lc 1.128s -> 6s */
+  var S1_SRC = MOB ? "../../screens/r5c/v3.31-creative-A-orange-phone-anim.html" : "../../screens/r5c/v3.31-creative-A-orange-desktop-anim.html";
+  var pin = { on: false, merge: false, visH: DH, pad: 0 };
   var ORANGE = [241, 157, 56];
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var HERO = document.getElementById("hero");
@@ -328,6 +340,8 @@ html{background:#000}
   var ss = function (a, b, x) { x = cl((x - a) / (b - a)); return x * x * (3 - 2 * x); };
   var sio = function (x) { return (1 - Math.cos(Math.PI * cl(x))) / 2; };
   var eio3 = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  var bz = function (x1, y1, x2, y2) { return function (t) { if (t <= 0) return 0; if (t >= 1) return 1; var lo = 0, hi = 1, u = t; for (var i = 0; i < 30; i++) { u = (lo + hi) / 2; var x = 3 * (1 - u) * (1 - u) * u * x1 + 3 * (1 - u) * u * u * x2 + u * u * u; if (x < t) lo = u; else hi = u; } return 3 * (1 - u) * (1 - u) * u * y1 + 3 * (1 - u) * u * u * y2 + u * u * u; }; };
+  var AE = bz(.16, 1, .3, 1);
   var B = null;
   var TGY = null; /* push target y (stage px); null = original VH*TY */
 
@@ -351,7 +365,13 @@ html{background:#000}
     if (!B) setup();
     var VW = mob ? 390 : 1440, VH = mob ? 844 : 900, KE = mob ? 90 : 42, TY = mob ? .42 : .5;
     if (p <= 0) { Z.style.display = "none"; B.forEach(function (b) { b.el.style.opacity = ""; }); HERO.style.transform = ""; HERO.style.opacity = ""; return; }
-    if (c >= 1) { Z.style.display = "none"; return; }
+    if (c >= 1 && !pin.merge) { Z.style.display = "none"; return; }
+    if (c >= 1 && pin.merge) { /* nested s1 is the section now (lock: page jumped to s1, f1z == f1) */
+      Z.style.display = "block"; B.forEach(function (b) { b.el.style.opacity = 0; });
+      ZK.style.opacity = .5; ZO.style.opacity = 1; ZC.style.visibility = "hidden";
+      if (ZB) { ZB.style.opacity = 1; ZB.style.transform = "translateY(0px)"; }
+      return;
+    }
     Z.style.display = "block"; B.forEach(function (b) { b.el.style.opacity = 0; });
     var A = 2 * Math.PI * .6 * sio(p), Rin = 1 - .35 * sio(p / .55), u = cl((p - .45) / .55), uo = u;
     var hs = ss(.25, 1, p); ZK.style.opacity = .5 * hs;
@@ -377,54 +397,124 @@ html{background:#000}
       }
     }
     ZO.style.opacity = ss(.9, .98, u);
-    if (ZB) { /* s1 card entrance lives in the s1 embed (Framer stacks sections) */ }
+    if (ZB) { var cc = AE(cl(c)); ZB.style.opacity = c > 0 ? AE(cl(c / .7)) : 0; ZB.style.transform = "translateY(" + ((mob ? 24 : 36) * (1 - cc)) + "px)"; }
     ZC.style.visibility = u >= .98 ? "hidden" : "visible";
   }
   window.setSwirl = setSwirl;
 
-  /* ---- fit scale (never crop) ---- */
+  /* ---- fit scale: V5 = never crop; V6 pin = width-fit stage, top-anchored crop (lock viewport), centred if taller ---- */
   var fit = { s: 1, ox: 0, oy: 0, fw: DW, fh: DH };
   var parentW = 0, seenV5 = false;
   var last = { p: 0, rectTop: null, vh: null };
+  var s1f = null, s1Ready = false, s1LastMs = -1;
+  function setBox(el, top, h) { el.style.top = top + "px"; el.style.height = h + "px"; }
   function applyScale() {
     var pw = Math.max(1, parentW || window.innerWidth || DW);
     var ph = window.innerHeight || 0;
-    var swr = pw / DW, s = swr;
-    if (ph > DH * swr * 0.3) s = Math.min(swr, ph / DH);
-    var fh = ph > DH * swr * 0.3 ? ph : DH * s;
-    fit = { s: s, ox: Math.max(0, (pw - DW * s) / 2), oy: 0, fw: pw, fh: fh };
-    var de = document.documentElement;
-    de.style.width = pw + "px"; de.style.height = fh + "px"; de.style.overflow = "hidden";
-    var bs = document.body.style;
-    bs.margin = "0"; bs.width = DW + "px"; bs.height = DH + "px"; bs.overflow = "hidden"; bs.position = "relative";
-    bs.transformOrigin = "0 0"; bs.transform = "translate(" + fit.ox + "px,0) scale(" + s + ")";
+    var de = document.documentElement, bs = document.body.style;
+    var s;
+    if (pin.on) {
+      s = pw / DW;
+      var visH = Math.max(1, ph / s), pad = Math.max(0, (visH - DH) / 2);
+      pin.visH = visH; pin.pad = pad;
+      fit = { s: s, ox: 0, oy: 0, fw: pw, fh: ph };
+      de.style.width = pw + "px"; de.style.height = ph + "px"; de.style.overflow = "hidden";
+      bs.margin = "0"; bs.width = DW + "px"; bs.height = Math.max(DH + pad, visH) + "px"; bs.overflow = "hidden"; bs.position = "relative";
+      bs.boxSizing = "border-box"; bs.paddingTop = pad + "px";
+      bs.transformOrigin = "0 0"; bs.transform = "scale(" + s + ")";
+      /* overlay covers the whole visible stage; crew layer stays aligned with #hero */
+      setBox(Z, 0, visH); setBox(ZK, 0, visH); setBox(ZO, 0, visH); setBox(ZC, pad, DH);
+      if (ZB) { setBox(ZB, 0, visH); if (s1f) { s1f.style.height = visH + "px"; postS1({ type: "iv-anim-resize", width: DW, height: Math.round(visH) }); } }
+    } else {
+      var swr = pw / DW; s = swr;
+      if (ph > DH * swr * 0.3) s = Math.min(swr, ph / DH);
+      var fh = ph > DH * swr * 0.3 ? ph : DH * s;
+      fit = { s: s, ox: Math.max(0, (pw - DW * s) / 2), oy: 0, fw: pw, fh: fh };
+      de.style.width = pw + "px"; de.style.height = fh + "px"; de.style.overflow = "hidden";
+      bs.margin = "0"; bs.width = DW + "px"; bs.height = DH + "px"; bs.overflow = "hidden"; bs.position = "relative"; bs.paddingTop = "0px";
+      bs.transformOrigin = "0 0"; bs.transform = "translate(" + fit.ox + "px,0) scale(" + s + ")";
+      setBox(Z, 0, DH); setBox(ZK, 0, DH); setBox(ZO, 0, DH); setBox(ZC, 0, DH);
+    }
     render(last.p);
+  }
+
+  /* ---- lock #zbox: nested s1 frame (merge mode only) ---- */
+  function postS1(m) {
+    if (!s1f || !s1f.contentWindow) return;
+    try { s1f.contentWindow.postMessage(Object.assign({ source: "iv-parent", bridge: 6 }, m), "*"); } catch (e) {}
+  }
+  function ensureZB() {
+    if (ZB) return;
+    ZB = document.createElement("div");
+    ZB.id = "zbox";
+    ZB.style.cssText = "position:absolute;z-index:3;left:0;top:0;width:" + DW + "px;height:" + pin.visH + "px;opacity:0;will-change:transform,opacity;pointer-events:none";
+    s1f = document.createElement("iframe");
+    s1f.id = "f1z"; s1f.setAttribute("scrolling", "no"); s1f.setAttribute("aria-hidden", "true"); s1f.tabIndex = -1;
+    s1f.style.cssText = "display:block;border:0;width:" + DW + "px;height:" + pin.visH + "px;pointer-events:none";
+    s1f.src = S1_SRC + (location.search || "");
+    s1f.addEventListener("load", function () { s1Ready = true; s1LastMs = -1; postS1({ type: "iv-anim-resize", width: DW, height: Math.round(pin.visH) }); render(last.p); });
+    ZB.appendChild(s1f);
+    Z.appendChild(ZB);
+  }
+  /* rec331 lc (seconds of the s1 board clock) */
+  function seekS1(lc) {
+    var ms = Math.round(cl(lc, 0, LC_END) * 1000);
+    if (!s1Ready || ms === s1LastMs) return;
+    s1LastMs = ms;
+    postS1({ type: "iv-anim-scrub", role: "story", progress: ms / (LC_END * 1000), ms: ms, heroZoom: false, rectTop: 0, vh: Math.round(pin.visH) });
   }
 
   function render(hp) {
     hp = cl(Number(hp) || 0);
-    var zp = reduce ? 0 : cl(hp / Z_END);
-    /* centre of the on-screen part of the hero (stage px); at page top this is exactly VH*TY of the original */
-    if (typeof last.rectTop === "number" && typeof last.vh === "number") {
+    var zp, c = 0, lc = 0;
+    if (pin.on && pin.merge) {
+      /* one clock for swirl + s1 entrance + s1 beats (lock order) */
+      var tau = hp <= F_A ? T_A * hp / F_A : T_A;
+      zp = cl(tau / T_Z); c = cl((tau - T_C0) / T_CD); lc = cl((tau - T_LC0) * LC_RATE, 0, LC_END);
+      if (hp > F_A) { var lcA = (T_A - T_LC0) * LC_RATE; lc = lcA + (LC_END - lcA) * cl((hp - F_A) / (1 - F_A)); }
+      if (reduce) { zp = 0; c = hp >= 0.5 ? 1 : 0; lc = LC_END; }
+      ensureZB();
+    } else if (pin.on) {
+      zp = reduce ? 0 : hp;
+    } else {
+      zp = reduce ? 0 : cl(hp / Z_END);
+    }
+    if (pin.on) {
+      TGY = pin.visH * (MOB ? .42 : .5) - pin.pad; /* lock: VH*TY of the (pinned) viewport, in #hero coords */
+    } else if (typeof last.rectTop === "number" && typeof last.vh === "number") {
+      /* V5: centre of the on-screen part of the hero (stage px) */
       var vtF = cl(-last.rectTop, 0, fit.fh), vbF = cl(last.vh - last.rectTop, vtF + 1, fit.fh);
       var vt = (vtF - fit.oy) / fit.s, vb = (vbF - fit.oy) / fit.s;
       var TY = MOB ? .42 : .5, VH = MOB ? 844 : 900;
       TGY = last.rectTop >= 0 && vb - vt >= VH - 1 ? VH * TY : vt + Math.min(vb - vt, VH) * TY;
     } else TGY = null;
-    setSwirl(zp, 0, MOB);
-    var f = zp > 0 ? +ZO.style.opacity || 0 : 0;
+    if (reduce && pin.on && pin.merge) {
+      Z.style.display = c >= 1 ? "block" : "none"; ZO.style.opacity = c >= 1 ? 1 : 0; ZK.style.opacity = 0; ZC.style.visibility = "hidden";
+      if (ZB) { ZB.style.opacity = c >= 1 ? 1 : 0; ZB.style.transform = "none"; }
+    } else {
+      setSwirl(zp, c, MOB);
+    }
+    if (pin.on && pin.merge) seekS1(lc);
+    var f = zp > 0 || c > 0 ? +ZO.style.opacity || 0 : 0;
     document.documentElement.style.background = "rgb(" + Math.round(ORANGE[0] * f) + "," + Math.round(ORANGE[1] * f) + "," + Math.round(ORANGE[2] * f) + ")";
+    /* hero CTAs only clickable while the hero is actually what you see */
+    HERO.style.pointerEvents = zp > 0.45 || c > 0 ? "none" : "";
   }
 
   window.addEventListener("message", function (ev) {
     var d = ev.data;
-    if (!d || d.source !== "iv-parent") return;
+    if (!d) return;
+    if (d.source === "iv-embed" && s1f && ev.source === s1f.contentWindow) { if (d.type === "iv-anim-ready") { s1Ready = true; s1LastMs = -1; render(last.p); } return; }
+    if (d.source !== "iv-parent") return;
     if ((Number(d.bridge) || 0) >= 5) seenV5 = true; else if (seenV5) return;
     if (d.type === "iv-anim-scrub" && typeof d.progress === "number" && (!d.role || d.role === "hero")) {
+      var pon = d.pinned === true, mg = pon && d.merge === true;
+      var relayout = pon !== pin.on || mg !== pin.merge;
+      pin.on = pon; pin.merge = mg;
       last.p = d.progress;
       last.rectTop = typeof d.rectTop === "number" ? d.rectTop : null;
       last.vh = typeof d.vh === "number" ? d.vh : null;
-      render(last.p);
+      if (relayout) applyScale(); else render(last.p);
     } else if (d.type === "iv-anim-resize" && (d.width || d.w)) {
       parentW = Number(d.width || d.w) || 0;
       applyScale();
@@ -435,10 +525,15 @@ html{background:#000}
   var annT = 0;
   function announce() {
     if (seenV5) { if (annT) { clearInterval(annT); annT = 0; } return; }
-    try { parent.postMessage({ source: "iv-embed", type: "iv-anim-ready", role: "hero", id: location.pathname, designW: DW, designH: DH }, "*"); } catch (e) {}
+    try { parent.postMessage({ source: "iv-embed", type: "iv-anim-ready", role: "hero", id: location.pathname, designW: DW, designH: DH, pin: true }, "*"); } catch (e) {}
   }
   if (window.parent !== window) { announce(); annT = setInterval(announce, 1200); }
-  window.__ivHeroSwirl = { render: function (hp) { last.p = hp; last.rectTop = null; last.vh = null; render(hp); }, zEnd: Z_END };
+  window.__ivHeroSwirl = {
+    render: function (hp) { last.p = hp; last.rectTop = null; last.vh = null; render(hp); }, zEnd: Z_END,
+    setPin: function (on, merge) { pin.on = !!on; pin.merge = !!on && !!merge; applyScale(); },
+    clock: function (hp) { var tau = hp <= F_A ? T_A * hp / F_A : T_A; return { tau: tau, zp: cl(tau / T_Z), c: cl((tau - T_C0) / T_CD) }; },
+    consts: { T_Z: T_Z, T_C0: T_C0, T_CD: T_CD, T_LC0: T_LC0, F_A: F_A }
+  };
 })();
 
 </script>

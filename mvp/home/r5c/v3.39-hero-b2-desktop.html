@@ -317,7 +317,7 @@ html{background:#000}
 </script>
 <script>
 (function () {
-  /* IV hero r5g (pinned, 1:1 lock timeline) — r5d 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
+  /* IV hero r5h (perf gate: same pixels as r5g; batched style reads, no per-frame redundant writes, eager setup, reduced-motion crossfade) — r5g (pinned, 1:1 lock timeline) — r5d 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
      sideways whoosh, orange rides the orbit and pushes to camera only after p > .45, ZK dim, ZO flat).
      Source: /workspace/iv-site-build/ui-v3/full/v3.31-home-{desktop,phone}.html (setSwirl + setup + helpers, verbatim math).
      Driven by bridge V5 {iv-anim-scrub, role:"hero"}: swirl p = clamp(heroP / Z_END). Scrubs both ways.
@@ -343,6 +343,7 @@ html{background:#000}
   var pin = { on: false, merge: false, visH: DH, pad: 0 };
   var MAX_CROP = 0.1; /* r5f: pin stage crops at most 10% of the hero bottom (1920x1080 = exactly 10%) */
   var ORANGE = [241, 157, 56];
+  var PROMOTE = /[?&#]promote\b/.test(location.search + location.hash); /* r5h: off by default (changes raster AA = not pixel-identical) */
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var HERO = document.getElementById("hero");
   if (!HERO) return;
@@ -379,6 +380,9 @@ html{background:#000}
       var orange = /fill="#F19D38"/i.test(sv.innerHTML.replace(/stop-color="#F19D38"/ig, ""));
       return { el: el, c: c, "in": c.firstElementChild, L: L, T: T, s: s, cx: L + .5 * s, cy: T + .58 * s, orange: orange, halo: c.querySelector("svg > circle[filter]"), i: i };
     });
+    /* r5h: compositor layers for the per-frame transform/opacity writes (crew clones + dim/orange veils), so a scrolled frame is
+       a composite, not a full-stage repaint. The orange clone is left unpromoted: it scales to 42x and must re-raster sharp. */
+    if (PROMOTE) { B.forEach(function (b) { if (!b.orange) b.c.style.willChange = "transform,opacity"; }); ZK.style.willChange = "opacity"; ZO.style.willChange = "opacity"; }
     var n = B.length, C = { x: B.reduce(function (a, b) { return a + b.cx; }, 0) / n, y: B.reduce(function (a, b) { return a + b.cy; }, 0) / n };
     B.forEach(function (b) { var dx = b.cx - C.x, dy = (b.cy - C.y) / .5; b.r = Math.hypot(dx, dy); b.th = Math.atan2(dy, dx); }); B.C = C;
   }
@@ -399,10 +403,12 @@ html{background:#000}
     var A = 2 * Math.PI * .6 * sio(p), Rin = 1 - .35 * sio(p / .55), u = cl((p - .45) / .55), uo = u;
     var hs = ss(.25, 1, p); ZK.style.opacity = .5 * hs;
     var tgy = TGY === null ? VH * TY : TGY;
+    /* r5h: read every bob offset first (one style recalc), then write (was read/write interleaved per blob = 6 forced recalcs) */
+    var bobK = 1 - ss(0, .35, p), TY0 = [];
+    for (var j0 = 0; j0 < B.length; j0++) TY0.push(bobK > 0 ? (function (el) { var m = getComputedStyle(el).transform; return m && m !== "none" ? +m.split(",")[5].replace(")", "") : 0; })(B[j0].el.firstElementChild) : 0);
     for (var j = 0; j < B.length; j++) {
       var b = B[j];
-      var th = b.th + A, ty0 = (function () { var m = getComputedStyle(b.el.firstElementChild).transform; return m && m !== "none" ? +m.split(",")[5].replace(")", "") : 0; })();
-      var bobK = 1 - ss(0, .35, p);
+      var th = b.th + A, ty0 = TY0[j];
       b["in"].style.transform = "translateY(" + (ty0 * bobK) + "px)";
       var zd = Math.sin(th) - Math.sin(b.th), kd = 1 + .16 * zd;
       if (!b.orange) {
@@ -429,7 +435,7 @@ html{background:#000}
   var fit = { s: 1, ox: 0, oy: 0, fw: DW, fh: DH };
   var parentW = 0, seenV5 = false;
   var last = { p: 0, rectTop: null, vh: null };
-  var s1f = null, s1Ready = false, s1LastMs = -1;
+  var s1f = null, s1Ready = false, s1LastMs = -1, lastBg = "";
   function setBox(el, top, h) { el.style.top = top + "px"; el.style.height = h + "px"; }
   function applyScale() {
     var pw = Math.max(1, parentW || window.innerWidth || DW);
@@ -496,7 +502,7 @@ html{background:#000}
       /* one clock for swirl + s1 entrance + s1 beats (lock order) */
       var tau = T_END * hp;
       zp = cl(tau / T_Z); c = cl((tau - T_C0) / T_CD); lc = cl((tau - T_LC0) * LC_RATE, 0, LC_END);
-      if (reduce) { zp = 0; c = tau >= T_Z ? 1 : 0; lc = LC_END; }
+      if (reduce) { zp = 0; c = hp >= 0.5 ? 1 : 0; lc = LC_END; } /* r5h: RM = static hero, then static s1 end state (no motion) */
       ensureZB();
     } else if (pin.on) {
       zp = reduce ? 0 : hp;
@@ -513,14 +519,17 @@ html{background:#000}
       TGY = last.rectTop >= 0 && vb - vt >= VH - 1 ? VH * TY : vt + Math.min(vb - vt, VH) * TY;
     } else TGY = null;
     if (reduce && pin.on && pin.merge) {
-      Z.style.display = c >= 1 ? "block" : "none"; ZO.style.opacity = c >= 1 ? 1 : 0; ZK.style.opacity = 0; ZC.style.visibility = "hidden";
-      if (ZB) { ZB.style.opacity = c >= 1 ? 1 : 0; ZB.style.transform = "none"; }
+      /* r5h: <=200ms opacity crossfade only (no movement); hero stays clickable until the swap */
+      Z.style.display = "block"; Z.style.transition = "opacity .2s linear"; Z.style.opacity = c >= 1 ? 1 : 0;
+      ZO.style.opacity = 1; ZK.style.opacity = 0; ZC.style.visibility = "hidden";
+      if (ZB) { ZB.style.opacity = 1; ZB.style.transform = "none"; }
     } else {
       setSwirl(zp, c, MOB);
     }
     if (pin.on && pin.merge) seekS1(lc);
     var f = zp > 0 || c > 0 ? +ZO.style.opacity || 0 : 0;
-    document.documentElement.style.background = "rgb(" + Math.round(ORANGE[0] * f) + "," + Math.round(ORANGE[1] * f) + "," + Math.round(ORANGE[2] * f) + ")";
+    var bg = "rgb(" + Math.round(ORANGE[0] * f) + "," + Math.round(ORANGE[1] * f) + "," + Math.round(ORANGE[2] * f) + ")";
+    if (bg !== lastBg) { lastBg = bg; document.documentElement.style.background = bg; } /* r5h: no repaint when unchanged */
     /* hero CTAs only clickable while the hero is actually what you see */
     HERO.style.pointerEvents = zp > 0.45 || c > 0 ? "none" : "";
   }
@@ -546,6 +555,8 @@ html{background:#000}
   });
   window.addEventListener("resize", function () { parentW = 0; applyScale(); });
   applyScale();
+  /* r5h: build the orbit clones up front (was lazily on the first scrolled frame = a hitch at scroll start); Z stays hidden */
+  try { if (!B && !reduce) setup(); } catch (e) {}
   var annT = 0;
   function announce() {
     if (seenV5) { if (annT) { clearInterval(annT); annT = 0; } return; }

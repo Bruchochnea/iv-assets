@@ -298,7 +298,7 @@ html{background:#000}
 </script>
 <script>
 (function () {
-  /* IV hero r5e (pinned) — r5d 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
+  /* IV hero r5g (pinned, 1:1 lock timeline) — r5d 1:1 port of v3.31 window.setSwirl (crew orbit 0.6 turn on a flattened ellipse with depth scale,
      sideways whoosh, orange rides the orbit and pushes to camera only after p > .45, ZK dim, ZO flat).
      Source: /workspace/iv-site-build/ui-v3/full/v3.31-home-{desktop,phone}.html (setSwirl + setup + helpers, verbatim math).
      Driven by bridge V5 {iv-anim-scrub, role:"hero"}: swirl p = clamp(heroP / Z_END). Scrubs both ways.
@@ -316,7 +316,10 @@ html{background:#000}
   /* V6 pin + merge timeline, in rec331 lock seconds after z0 (tau) and scroll share of the pin */
   var T_Z = 1.45, T_C0 = 1.34, T_CD = 0.8, T_LC0 = 1.20, LC_RATE = 1.2, LC_END = 6;
   var T_A = T_C0 + T_CD; /* 2.14s: card settled */
-  var F_A = 0.728; /* share of the merged pin played at lock speed (2.675vh of 3.675vh); rest = beats lc 1.128s -> 6s */
+  /* r5g: whole merged pin is 1:1 with the lock timeline. rec331: z0 = 1.70s ... T.s2 = lc0 + 6/1.2 = 7.90s (s1 -> s2 move
+     starts). tau runs 0 -> T_END = 6.20s over the pin (recorder speed 900px/0.8s = 1.25vh/s -> 7.75vh pin, 875vh wrapper).
+     Includes the lock's own hold: the s1 board timeline ends at lc 4.2s (tau 4.70s), final frame held to tau 6.20s. */
+  var T_END = 6.20;
   var S1_SRC = MOB ? "../../screens/r5c/v3.31-creative-A-orange-phone-anim.html" : "../../screens/r5c/v3.31-creative-A-orange-desktop-anim.html";
   var pin = { on: false, merge: false, visH: DH, pad: 0 };
   var MAX_CROP = 0.1; /* r5f: pin stage crops at most 10% of the hero bottom (1920x1080 = exactly 10%) */
@@ -472,10 +475,9 @@ html{background:#000}
     var zp, c = 0, lc = 0;
     if (pin.on && pin.merge) {
       /* one clock for swirl + s1 entrance + s1 beats (lock order) */
-      var tau = hp <= F_A ? T_A * hp / F_A : T_A;
+      var tau = T_END * hp;
       zp = cl(tau / T_Z); c = cl((tau - T_C0) / T_CD); lc = cl((tau - T_LC0) * LC_RATE, 0, LC_END);
-      if (hp > F_A) { var lcA = (T_A - T_LC0) * LC_RATE; lc = lcA + (LC_END - lcA) * cl((hp - F_A) / (1 - F_A)); }
-      if (reduce) { zp = 0; c = hp >= 0.5 ? 1 : 0; lc = LC_END; }
+      if (reduce) { zp = 0; c = tau >= T_Z ? 1 : 0; lc = LC_END; }
       ensureZB();
     } else if (pin.on) {
       zp = reduce ? 0 : hp;
@@ -534,8 +536,8 @@ html{background:#000}
   window.__ivHeroSwirl = {
     render: function (hp) { last.p = hp; last.rectTop = null; last.vh = null; render(hp); }, zEnd: Z_END,
     setPin: function (on, merge) { pin.on = !!on; pin.merge = !!on && !!merge; applyScale(); },
-    clock: function (hp) { var tau = hp <= F_A ? T_A * hp / F_A : T_A; return { tau: tau, zp: cl(tau / T_Z), c: cl((tau - T_C0) / T_CD) }; },
-    consts: { T_Z: T_Z, T_C0: T_C0, T_CD: T_CD, T_LC0: T_LC0, F_A: F_A }
+    clock: function (hp) { var tau = T_END * hp; return { tau: tau, zp: cl(tau / T_Z), c: cl((tau - T_C0) / T_CD), lc: cl((tau - T_LC0) * LC_RATE, 0, LC_END) }; },
+    consts: { T_Z: T_Z, T_C0: T_C0, T_CD: T_CD, T_LC0: T_LC0, T_END: T_END }
   };
 })();
 

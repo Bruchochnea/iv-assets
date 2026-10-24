@@ -1,0 +1,367 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>IV Home pricing phone</title>
+<link rel=preconnect href="https://fonts.googleapis.com">
+<link rel=preconnect href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap" rel=stylesheet>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Figtree;color:#141415;background:#F5F5F7;width:390px;max-width:390px}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Figtree;color:#141415;background:#fff;width:390px}
+.m{font-size:12px;letter-spacing:.07em;text-transform:uppercase}
+.pill{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 28px;border-radius:999px;background:#2E5CF0;color:#fff;font-weight:700;font-size:17px;white-space:nowrap}
+.ghost{display:inline-flex;align-items:center;height:42px;padding:0 20px;border-radius:999px;border:1.5px solid currentColor;font-weight:600;font-size:15px}
+.gr{position:relative;overflow:hidden;border-radius:32px}.gr:after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");opacity:.32;mix-blend-mode:overlay;pointer-events:none}
+.ui{background:#fff;border-radius:18px;box-shadow:0 30px 60px -25px rgba(20,20,21,.45),0 0 0 1px rgba(0,0,0,.04);color:#141415}
+.chip{color:#141415;display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:#fff;font-weight:600;font-size:14px;box-shadow:inset 0 0 0 1.5px #E5E5EA;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:999px;border:1.5px dashed #D1D1D6;font-size:16px;font-weight:500;white-space:nowrap}
+.card{background:#fff;border-radius:32px;position:relative;overflow:hidden}
+.abs{position:absolute}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding:0 64px}
+.cg>div:first-child{grid-column:1/7}.cg>div:last-child{grid-column:7/13;justify-self:end}
+.wc{background:#fff;color:#141415;border-radius:24px;padding:28px 32px}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.bob{animation:bob 3s ease-in-out infinite}html,body{overflow:hidden;height:844px}#pg{will-change:transform}.nw{white-space:nowrap}.m{font-family:Figtree!important}
+a.pill{text-decoration:none;cursor:pointer;transition:transform .2s cubic-bezier(.22,1,.36,1)}a.pill:hover{transform:translateY(-1px)}
+a.pill:focus-visible,.slot:focus-visible{outline:3px solid #6FD0FF;outline-offset:3px}
+.mq{position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--fade),#000 calc(100% - var(--fade)),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 var(--fade),#000 calc(100% - var(--fade)),transparent 100%)}
+.mq-track{display:flex;width:max-content;margin-left:var(--fade);animation:mq var(--dur) linear infinite}
+.mq:hover .mq-track,.mq:focus-within .mq-track{animation-play-state:paused}
+.mq-set{display:flex;align-items:center;flex:none}
+.lg{display:inline-flex;align-items:center;flex:none;color:#6E6E73;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mq{-webkit-mask-image:none;mask-image:none}.mq-track{animation:none;width:auto;margin-left:0}.mq-set{flex-wrap:wrap;justify-content:center;row-gap:24px}.mq-set[aria-hidden]{display:none}}
+.cal{background:#141415;color:#fff;border-radius:16px;box-shadow:inset 0 0 0 1px #2C2C2E;font-family:Figtree}
+.cal .d{display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:500;color:#8E8E93;position:relative}
+.cal .d.av{background:#2C2C2E;color:#fff;font-weight:700}
+.cal .d.sel{background:#2E5CF0;color:#fff;font-weight:700}
+.cal .d.td:after{content:"";position:absolute;bottom:6px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor}
+.cal .wd{text-align:center;color:#8E8E93;font-weight:600}
+.slot{display:flex;align-items:center;justify-content:center;border-radius:8px;box-shadow:inset 0 0 0 1px #3A3A3C;font-weight:600;color:#fff}
+.slot.hv{box-shadow:inset 0 0 0 1.5px #2E5CF0}
+.cal .ic{width:16px;height:16px;flex:none;stroke:#A1A1A6;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+a.fl{color:inherit;text-decoration:none;border-radius:4px}a.fl:hover{text-decoration:underline;text-underline-offset:4px}a.fl:focus-visible{outline:3px solid #6FD0FF;outline-offset:3px}
+html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.sic{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+.sb-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;border:0;background:transparent;color:inherit;font:600 15px/1 Figtree;text-decoration:none;cursor:pointer;border-radius:999px;transition:background .2s}
+.sb-cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:#2E5CF0;color:#fff;font:700 15px/1 Figtree;text-decoration:none;border-radius:999px;cursor:pointer;white-space:nowrap;border:0}
+.sb-btn:focus-visible,.sb-cta:focus-visible,#chat button:focus-visible,#chat a:focus-visible,#chat input:focus-visible{outline:3px solid #6FD0FF;outline-offset:2px}
+#chat{position:fixed;z-index:61;font-family:Figtree;background:#141415;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.4);display:none;flex-direction:column;overflow:hidden}
+body.chat-open #chat{display:flex}
+#chat .bub{background:#2C2C2E;border-radius:4px 16px 16px 16px;padding:12px 14px;font-size:15px;line-height:1.45;color:#fff;max-width:88%}
+#chat .cq{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid #3A3A3C;background:transparent;color:#fff;font:600 14px/1 Figtree;cursor:pointer;text-decoration:none}
+
+@property --sbp{syntax:'<number>';inherits:true;initial-value:0}
+#sbar{position:fixed;z-index:60;left:16px;right:16px;bottom:calc(16px + var(--sab,env(safe-area-inset-bottom,0px)));display:flex;align-items:center;gap:6px;padding:6px;
+  background:#141415;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:999px;box-shadow:0 10px 28px rgba(0,0,0,.28);font-family:Figtree;
+  opacity:var(--sbp);transform:translateY(calc((1 - var(--sbp))*24px));visibility:hidden;transition:--sbp .35s cubic-bezier(.22,1,.36,1),visibility 0s linear .35s}
+#sbar.on{--sbp:1;visibility:visible;transition:--sbp .35s cubic-bezier(.22,1,.36,1),visibility 0s}
+#sbar .sb-btn:hover{background:#2C2C2E}
+@media (prefers-reduced-motion:reduce){#sbar,#sbar.on{transition:none;transform:none}}
+
+#hero > div > div[style="position:relative"]{pointer-events:none}#hero > div > div[style="position:relative"] a{pointer-events:auto}
+#hero .crew{cursor:pointer;will-change:transform}
+.vring{border-radius:50%;border:2px solid #6FD0FF;opacity:0;pointer-events:none;z-index:3}
+.vcap{z-index:4;transform:translateX(-50%);text-align:center;font-family:Figtree;font-weight:600;color:#fff;opacity:0;pointer-events:none;text-wrap:balance}
+.vcap.listen{color:#D1D1D6}
+.vctl{z-index:4;font-family:Figtree;color:#fff;opacity:0}
+.vctl .vrow{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 18px;background:rgba(20,20,21,.86);border:1px solid rgba(255,255,255,.12);border-radius:999px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);white-space:nowrap}
+.vctl .vcard{background:rgba(20,20,21,.9);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px 20px 16px;text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.vctl .vt{font-size:17px;line-height:1.35;font-weight:700;margin:0 4px;text-wrap:balance}
+.vctl .vs{font-size:15px;font-weight:600;margin-right:8px;min-width:96px}
+.vctl .vdot{width:8px;height:8px;border-radius:50%;background:#6FD0FF;margin-right:2px;flex:none}
+.vctl .vbtns{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.vb{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;padding:0 16px;border-radius:999px;border:0;background:#2C2C2E;color:#fff;font:600 15px/1 Figtree;cursor:pointer;text-decoration:none}
+.vb.gh{background:transparent;box-shadow:inset 0 0 0 1px #3A3A3C}.vb.ic{padding:0;width:44px}.vb:hover{background:#3A3A3C}.vb.gh:hover{background:#2C2C2E}
+.vctl .sb-cta{height:44px;padding:0 20px}
+.vnote{z-index:4;transform:translateX(-50%);font:500 13px/1.3 Figtree;color:#D1D1D6;white-space:nowrap;opacity:0;pointer-events:none}
+.vh{z-index:4;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px 0 14px;border-radius:999px;background:rgba(20,20,21,.72);border:1px solid rgba(255,255,255,.14);color:#fff;font:600 15px/1 Figtree;cursor:pointer;white-space:nowrap;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.vh:hover{background:rgba(44,44,46,.9)}
+.vh:focus-visible,.vb:focus-visible,.vctl .sb-cta:focus-visible{outline:3px solid #6FD0FF;outline-offset:3px}
+
+#vi{position:fixed;left:0;top:0;z-index:70;pointer-events:none;font-family:Figtree;color:#fff;visibility:hidden}
+#vi .vbg{position:absolute;background:#141415;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 28px rgba(0,0,0,.28);border-radius:999px;overflow:hidden;pointer-events:auto}
+#vi .vslot{position:absolute;left:0;top:0}
+#vi .vslot svg{position:absolute;overflow:visible}
+#vi .viring{position:absolute;border-radius:50%;border:2px solid #6FD0FF;opacity:0}
+#vi .vrowc{position:absolute;top:0;bottom:0;display:flex;align-items:center;gap:6px}
+#vi .vicap{flex:1;min-width:0;white-space:nowrap;overflow:hidden;font-weight:600}
+#vi .vicap.listen{color:#D1D1D6}
+#vi .vitx{flex:1;min-width:0;font-weight:700;line-height:1.22;text-wrap:balance}
+#vi .vb{background:#2C2C2E}
+#vi .sb-cta{padding:0 18px}
+#vi .vtimeup .vitx{font-size:.92em;line-height:1.18}
+#vconsent{z-index:75;font-family:Figtree;color:#fff;background:#141415;opacity:0;visibility:hidden}
+#vconsent h2{font:800 22px/1.15 Figtree;letter-spacing:-.02em;margin:0 0 8px}
+#vconsent .cb{font:400 16px/1.5 Figtree;margin:0}
+#vconsent .cb a{color:#6FD0FF;text-decoration:underline;text-underline-offset:3px}
+#vconsent .cbt{display:flex;gap:8px;margin-top:18px}
+#vconsent .cbt button{min-height:48px;border-radius:999px;border:0;font:700 16px/1 Figtree;cursor:pointer;padding:0 24px}
+#vconsent .cst{background:#2E5CF0;color:#fff}#vconsent .cst:hover{box-shadow:inset 0 0 0 999px rgba(255,255,255,.1)}
+#vconsent .ccn{background:#2C2C2E;color:#fff}#vconsent .ccn:hover{background:#3A3A3C}
+#vconsent .cs{font:500 14px/1.4 Figtree;color:#A1A1A6;margin:12px 0 0}
+#vconsent button:focus-visible,#vconsent a:focus-visible{outline:3px solid #6FD0FF;outline-offset:3px}
+#vconsent.desk{position:absolute;width:400px;padding:24px;border-radius:24px;border:1px solid rgba(255,255,255,.12)}
+#vconsent.sheet{position:fixed;left:0;right:0;bottom:0;padding:28px 20px calc(20px + var(--sab,env(safe-area-inset-bottom,0px)));border-radius:28px 28px 0 0;border:1px solid rgba(255,255,255,.12);border-bottom:0;box-shadow:0 -10px 28px rgba(0,0,0,.28)}
+#vconsent.sheet h2{font-size:24px}#vconsent.sheet .cbt button{flex:1;min-height:52px}
+#hero button.pill{pointer-events:auto}
+#vhint{background:#2C2C2E;color:#fff;border:0;cursor:pointer;gap:10px;font-weight:700}
+#vhint:hover{background:#3A3A3C}#vhint:focus-visible{outline:3px solid #6FD0FF;outline-offset:3px}
+#vhint .glyph{flex:none;display:block}
+#vifly{position:fixed;left:0;top:0;z-index:80;pointer-events:none;visibility:hidden}
+#vifly svg{position:absolute;overflow:visible}
+
+#vconsent .cpv{font:500 13px/1.4 Figtree;color:#A1A1A6;margin:6px 0 0}
+#vconsent .cpv a{color:#A1A1A6;text-decoration:underline;text-underline-offset:3px}
+
+/* v3.33 challenges */
+.chs{background:#fff}
+.chfewer{display:none!important}.chs.all .chfewer{display:inline-flex!important}
+.chs h2{font-weight:800;letter-spacing:-.045em}
+.chi{border-radius:24px;transition:background-color .3s cubic-bezier(.22,1,.36,1)}
+.chq{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;width:100%;cursor:pointer;color:#141415;font-family:Figtree;font-weight:600;letter-spacing:-.02em}
+.chq:focus-visible,.chl:focus-visible,.chmore:focus-visible{outline:3px solid #2E5CF0;outline-offset:3px;border-radius:16px}
+.cht{width:48px;height:48px;border-radius:50%;background:#F4F4F7;display:flex;align-items:center;justify-content:center;flex:none;color:#141415;transition:background-color .2s}
+.chx{transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.chi.on .chx{transform:rotate(45deg)}
+.chq:hover .cht{background:#E5E5EA}
+.cha{display:none}.chi.on .cha{display:block}
+.cha p{font-size:19px;line-height:1.5;color:#141415}
+.chl{display:inline-flex;align-items:center;gap:8px;min-height:44px;font:700 17px/1 Figtree;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.chl:hover{text-decoration-thickness:3px}
+.chi.more{display:none}.chs.all .chi.more{display:block}
+.chmore{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:10px;min-height:54px;padding:0 24px 0 20px;border-radius:999px;background:#F4F4F7;color:#141415;font:700 17px/1 Figtree;cursor:pointer}
+.chmore:hover{background:#E5E5EA}
+.chs.all .chmore .chx{transform:rotate(45deg)}
+.chv{position:relative}.chv .chvs{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s cubic-bezier(.22,1,.36,1),visibility 0s linear .35s}
+.chv .chvs.on{opacity:1;visibility:visible;transition:opacity .35s cubic-bezier(.22,1,.36,1)}
+.tq{background:#F4F4F7;border-radius:32px;color:#141415}
+.tq blockquote{color:#6E6E73;font-weight:600;letter-spacing:-.02em}
+.tq .tav{border-radius:50%;background:#D1D1D6;flex:none}
+@media (prefers-reduced-motion:reduce){.chi,.chx,.cht,.chv .chvs{transition:none!important}}
+
+.chA .chi .chq{padding:18px 16px 18px 18px;gap:14px;font-size:20px;line-height:1.3}
+.chA .cht{width:44px;height:44px}
+.chA .chi.on{background:#F4F4F7;border-radius:20px;overflow:hidden}.chA .chi.on .cht{background:#fff}
+.chA .cha{padding:0 0 0 0}.chA .cha p{font-size:16px;padding:0 18px}.chA .cha .chl{margin:6px 18px 14px;font-size:16px}
+.chA .chi+.chi{margin-top:2px}
+
+/* v3.37 pricing v3 (D-v2) (Designjoy-style, modes follow the offer) */
+#pricing{font-family:Figtree}
+#pricing h2{font-weight:800;letter-spacing:-.045em;margin:0;color:#141415}
+#pricing p,#pricing h3,#pricing h4,#pricing ul{margin:0;padding:0}
+#pricing .pv-pc{position:relative;overflow:hidden;border-radius:32px;display:flex;flex-direction:column}
+#pricing .pv-pc[hidden]{display:none}
+#pricing .pv-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+#pricing .pv-name{font-weight:800;letter-spacing:-.035em;line-height:1.05}
+#pricing .pv-tag{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:999px;font:600 14px/1 Figtree;white-space:nowrap}
+#pricing .pv-sub{font-weight:600;margin-top:6px}
+#pricing .pv-rule{border-top:1.5px dashed;margin:24px 0 24px;opacity:.6}
+#pricing .pv-price{font-weight:800;letter-spacing:-.045em;line-height:1}
+#pricing .pv-price.pv-pw{letter-spacing:-.035em}
+#pricing .pv-from{font-size:.36em;font-weight:600;letter-spacing:0;opacity:.75;vertical-align:.5em;margin-right:6px}
+#pricing .pv-inc{border-radius:20px;margin-top:24px;position:relative;z-index:1}
+#pricing .pv-inc h4{font:700 15px/1 Figtree}
+#pricing .pv-inc ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:14px}
+#pricing .pv-inc li{font-size:16px;line-height:1.35}
+#pricing .pv-ctas{margin-top:auto;padding-top:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;z-index:3}
+#pricing .pv-peek{position:absolute;right:-46px;bottom:-60px;pointer-events:none;z-index:2}
+#pricing .pv-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;font:600 17px/1 Figtree;color:inherit;text-decoration:none}
+#pricing .pv-link:hover{text-decoration:underline;text-underline-offset:4px}
+#pricing a:focus-visible,#pricing button:focus-visible{outline:3px solid #2E5CF0;outline-offset:3px;border-radius:12px}
+#pricing .m-colour a:focus-visible,#pricing .t-colour a:focus-visible{outline-color:#fff}
+#pricing .cc{position:relative;overflow:hidden;border-radius:24px}
+#pricing .cc .cc-art{position:absolute}
+#pricing .cc-name{position:absolute;left:24px;bottom:20px;font:700 18px/1 Figtree;letter-spacing:-.01em;z-index:2}
+#pricing .cv{transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+#pricing .cvb{animation-duration:3.2s}
+/* hover: characters lift and bounce (spring overshoot); reduced motion turns it off */
+#pricing .cc:hover .cv,#pricing .pt:hover .cv,#pricing .pv-pc:hover .cv{transform:translateY(-10px) rotate(var(--r,0deg)) scale(1.04)}
+@media (prefers-reduced-motion:reduce){#pricing .cv{transition:none}#pricing .cvb{animation:none}#pricing .cc:hover .cv,#pricing .pt:hover .cv,#pricing .pv-pc:hover .cv{transform:none}}
+
+#pricing .pv-unit{font-size:.4em;font-weight:600;letter-spacing:0;margin-left:4px;opacity:.8}
+#pricing .pv-ghost{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:56px;padding:0 26px 0 18px;border-radius:999px;box-shadow:inset 0 0 0 1.5px currentColor;color:inherit;font:700 17px/1 Figtree;text-decoration:none;white-space:nowrap}
+#pricing .pv-ghost:hover{box-shadow:inset 0 0 0 2.5px currentColor}
+#pricing .cc{border-radius:24px}
+#pricing .cc-label{position:absolute;left:24px;top:22px;z-index:2}
+#pricing .cc-name{position:static;font:800 22px/1.05 Figtree;letter-spacing:-.02em}
+#pricing .cc-price{font:700 18px/1.2 Figtree;margin-top:6px;letter-spacing:-.01em}
+#pricing .cc-price .pv-from{font-size:13px;vertical-align:.1em;opacity:.8}
+#pricing .cc-price .pv-unit{font-size:13px}
+#pricing .pv-was{font-size:.36em;font-weight:600;letter-spacing:0;margin-left:14px;opacity:.7;text-decoration-thickness:1.5px;vertical-align:.12em}
+#pricing .pv-note{font:500 15px/1.3 Figtree;opacity:.85;margin:10px 0 22px}
+#pricing .cc-price .pv-was{font-size:14px;margin-left:8px;vertical-align:0}
+#pricing .pv-pc{padding:28px 24px}
+#pricing .pv-name{font-size:30px}#pricing .pv-sub{font-size:16px}#pricing .pv-tag{height:30px;font-size:13px;padding:0 12px}
+#pricing .pv-price{font-size:60px}#pricing .pv-price.pv-pw{font-size:38px}
+#pricing .pv-inc{padding:18px 18px 20px}#pricing .pv-inc li{font-size:15px}#pricing .pv-inc ul{gap:8px 16px}
+#pricing .pv-ctas{flex-direction:column;align-items:stretch;gap:4px}#pricing .pv-ctas .pill,#pricing .pv-ctas .pv-ghost{justify-content:center}#pricing .pv-second{text-align:center}
+#pricing .pv-peek{right:-34px;bottom:-46px;z-index:2}
+#pricing .pv-top{flex-wrap:wrap;row-gap:10px}
+#pricing .pv-price .pv-was{display:block;font-size:20px;margin:6px 0 0;vertical-align:0}
+#pricing .cc-price{font-size:16px}#pricing .cc-price .pv-was{font-size:12px;margin-left:6px}
+#pricing .pa-pair{position:relative}#pricing .pa-pair+.pa-pair{margin-top:40px}
+#pricing .pa-card{position:relative;z-index:3;width:300px;margin:0 auto -56px;border-radius:24px;box-shadow:0 24px 36px -20px #14141566}
+#pricing .pv-pc{padding-top:84px}
+
+#pricing .pv-was{opacity:.8}  /* AA fix: .7 gave 4.61:1 on orange, .8 clears it with margin */
+#pricing .vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#pricing a:focus-visible,#pricing button:focus-visible{outline:3px solid #2E5CF0;outline-offset:3px}
+#pricing .m-black a:focus-visible{outline-color:#6FD0FF}
+#pricing [data-mode=royal] a:focus-visible{outline-color:#fff}
+#pricing [data-mode=orange] a:focus-visible{outline-color:#141415}
+
+/* v7: Enterprise subline slot (ink-free: white at full strength on royal, 5.02:1; the default .85 opacity would fail AA) */
+#pricing [data-mode=royal] .pv-note{font:600 19px/1.35 Figtree;opacity:1;margin:14px 0 0;max-width:30ch}
+#pricing [data-mode=royal] .pv-inc{margin-top:28px}
+#pricing [data-mode=royal] .pv-note{font-size:16px;max-width:none}
+/* v8: CTA colour rule, royal blue = buy/commit */
+#pricing [data-k=ai] .pv-cta,#pricing [data-k=design] .pv-ctas>.pv-ghost,#pricing [data-k=sprint] .pv-ctas>.pv-ghost{background:#2E5CF0!important;color:#fff!important;box-shadow:none!important}
+#pricing [data-k=ai] .pv-cta:hover,#pricing [data-k=design] .pv-ctas>.pv-ghost:hover,#pricing [data-k=sprint] .pv-ctas>.pv-ghost:hover{box-shadow:none!important;transform:translateY(-1px)}
+#pricing [data-k=ai] .pv-cta .glyph g,#pricing [data-k=design] .pv-ctas>.pv-ghost .glyph g,#pricing [data-k=sprint] .pv-ctas>.pv-ghost .glyph g{fill:#fff}
+#pricing [data-k=sprint] a:focus-visible{outline-color:#141415}
+#pricing .pv-cta:focus-visible,#pricing .pv-ghost:focus-visible{border-radius:999px}
+
+/* v9: Working Genius trademark footnote on the AI card (Brand Strategist lock, Oct 23) */
+#pricing [data-k=ai] .pv-tm{font:500 13px/1.4 Figtree;color:#A1A1A6;letter-spacing:0;margin:12px 0 0;max-width:48ch}
+
+
+html,body{margin:0;overflow-x:hidden;scrollbar-width:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
+html,body{overflow-x:hidden;height:auto!important}
+</style>
+<style>/* framer-embed-chrome r5c: no internal scrollbars */
+html,body{margin:0;overflow:hidden!important;scrollbar-width:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
+#hl{min-height:0!important}
+</style></head><body>
+<section id=pricing data-bar=light style="position:relative"><div style="background:#F5F5F7;padding:64px 20px"><h2 style="font-size:40px;line-height:1;margin-bottom:28px">Pick where to start.</h2><div class=pa-pair id="pa-ai"><div class=pa-card style="transform:rotate(-5deg)"><div class="cc" style="width:300px;height:190px;background:#000;color:#fff;box-shadow:inset 0 0 0 1.5px transparent"><div class=cc-art style="left:62%;top:58%;transform:translate(-50%,-50%)"><span class=cv style="display:block;transform:rotate(0deg);"><span class="bob cvb" style="display:block"><svg width="84" height="97" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P1xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P1xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#0058EB" stop-opacity="0"/><stop offset="1" stop-color="#0058EB" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P1xg"><stop offset=".6" stop-color="#3C82F6" stop-opacity="1"/><stop offset=".72" stop-color="#3C82F6" stop-opacity=".45"/><stop offset="1" stop-color="#3C82F6" stop-opacity="0"/></radialGradient>
+<linearGradient id="P1xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P1xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P1xm)"/></mask>
+<filter id="P1xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P1xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P1xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><rect x="17" y="17" width="66" height="66" rx="17" fill="#fff" transform="rotate(-14 50 50)"/></mask></defs><circle cx="50" cy="51" r="64" fill="url(#P1xg)" opacity="0.40" filter="url(#P1xgb)"/><g transform="rotate(0 50 50)"><rect x="17" y="17" width="66" height="66" rx="17" fill="#3C82F6" transform="rotate(-14 50 50)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P1xh)" mask="url(#P1xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P1xs)" mask="url(#P1xsm)"/><rect x="40.0" y="39.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="39.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-label><p class=cc-name>IV | AI</p><p class="cc-price">$1,000</p></div></div></div><article class="pv-pc m-black on" data-k="ai" data-mode="black" aria-hidden="false" style="background:#000;color:#fff;box-shadow:inset 0 0 0 1.5px transparent"><div class=pv-top><h3 class=pv-name>IV | AI</h3><p class=pv-tag style="background:#2C2C2E;color:#fff">Solo, for founders and owners</p></div><p class=pv-sub>Roadmap to Genius</p><div class=pv-rule style="border-color:#2C2C2E"></div><p class="pv-price">$1,000</p><div class=pv-inc style="background:#1C1C1E;color:#fff"><h4>Included</h4><ul><li>2-hour session with me</li><li>Working Genius results first</li><li>Cut before we automate</li><li>Take-home Roadmap report</li></ul></div><div class=pv-ctas><a class="pv-ghost" href="https://cal.com/ivdesign/30min" data-cal-namespace="30min" data-cal-link="ivdesign/30min" data-cal-config='{"layout":"month_view","theme":"dark"}'><svg class=glyph width=22 height=22 viewBox="0 0 22 22" aria-hidden="true" style="flex:none"><g fill="#3C82F6"><rect x="3" y="3" width="16" height="16" rx="4.6" transform="rotate(-14 11 11)"/></g><rect x="8.3" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/><rect x="11.9" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/></svg>Book a call</a></div><div class=pv-peek aria-hidden="true"><span class=cv style="display:block;transform:rotate(0deg);"><span class="bob cvb" style="display:block"><svg width="110" height="126" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P2xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P2xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#0058EB" stop-opacity="0"/><stop offset="1" stop-color="#0058EB" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P2xg"><stop offset=".6" stop-color="#3C82F6" stop-opacity="1"/><stop offset=".72" stop-color="#3C82F6" stop-opacity=".45"/><stop offset="1" stop-color="#3C82F6" stop-opacity="0"/></radialGradient>
+<linearGradient id="P2xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P2xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P2xm)"/></mask>
+<filter id="P2xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P2xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P2xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><rect x="17" y="17" width="66" height="66" rx="17" fill="#fff" transform="rotate(-14 50 50)"/></mask></defs><circle cx="50" cy="51" r="64" fill="url(#P2xg)" opacity="0.40" filter="url(#P2xgb)"/><g transform="rotate(0 50 50)"><rect x="17" y="17" width="66" height="66" rx="17" fill="#3C82F6" transform="rotate(-14 50 50)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P2xh)" mask="url(#P2xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P2xs)" mask="url(#P2xsm)"/><rect x="40.0" y="39.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="39.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div></article></div><div class=pa-pair id="pa-design"><div class=pa-card style="transform:rotate(4deg)"><div class="cc gr" style="width:300px;height:190px;background:#F19D38;color:#141415;box-shadow:inset 0 0 0 1.5px transparent"><div class=cc-art style="left:60px;top:87px"><span class=cv style="display:block;transform:rotate(-12deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="120" height="138" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P3xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P3xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#E20875" stop-opacity="0"/><stop offset="1" stop-color="#E20875" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P3xg"><stop offset=".6" stop-color="#EB4699" stop-opacity="1"/><stop offset=".72" stop-color="#EB4699" stop-opacity=".45"/><stop offset="1" stop-color="#EB4699" stop-opacity="0"/></radialGradient>
+<linearGradient id="P3xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P3xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P3xm)"/></mask>
+<filter id="P3xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P3xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P3xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g transform="rotate(8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P3xh)" mask="url(#P3xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P3xs)" mask="url(#P3xsm)"/><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-art style="left:167px;top:19px"><span class=cv style="display:block;transform:rotate(14deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="108" height="124" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P4xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P4xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#0058EB" stop-opacity="0"/><stop offset="1" stop-color="#0058EB" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P4xg"><stop offset=".6" stop-color="#3C82F6" stop-opacity="1"/><stop offset=".72" stop-color="#3C82F6" stop-opacity=".45"/><stop offset="1" stop-color="#3C82F6" stop-opacity="0"/></radialGradient>
+<linearGradient id="P4xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P4xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P4xm)"/></mask>
+<filter id="P4xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P4xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P4xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><rect x="17" y="17" width="66" height="66" rx="17" fill="#fff" transform="rotate(-14 50 50)"/></mask></defs><g transform="rotate(-10 50 50)"><rect x="17" y="17" width="66" height="66" rx="17" fill="#3C82F6" transform="rotate(-14 50 50)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P4xh)" mask="url(#P4xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P4xs)" mask="url(#P4xsm)"/><rect x="40.0" y="39.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="39.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-art style="left:234px;top:76px"><span class=cv style="display:block;transform:rotate(-10deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="108" height="124" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P5xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P5xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#520BFF" stop-opacity="0"/><stop offset="1" stop-color="#520BFF" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P5xg"><stop offset=".6" stop-color="#895CF5" stop-opacity="1"/><stop offset=".72" stop-color="#895CF5" stop-opacity=".45"/><stop offset="1" stop-color="#895CF5" stop-opacity="0"/></radialGradient>
+<linearGradient id="P5xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P5xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P5xm)"/></mask>
+<filter id="P5xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P5xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P5xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="75.0" cy="50.0" r="19" fill="#fff"/><circle cx="62.5" cy="71.7" r="19" fill="#fff"/><circle cx="37.5" cy="71.7" r="19" fill="#fff"/><circle cx="25.0" cy="50.0" r="19" fill="#fff"/><circle cx="37.5" cy="28.3" r="19" fill="#fff"/><circle cx="62.5" cy="28.3" r="19" fill="#fff"/><circle cx="50" cy="50" r="28" fill="#fff"/></mask></defs><g transform="rotate(12 50 50)"><circle cx="75.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="62.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="37.5" cy="71.7" r="19" fill="#895CF5"/><circle cx="25.0" cy="50.0" r="19" fill="#895CF5"/><circle cx="37.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="62.5" cy="28.3" r="19" fill="#895CF5"/><circle cx="50" cy="50" r="28" fill="#895CF5"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P5xh)" mask="url(#P5xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P5xs)" mask="url(#P5xsm)"/><rect x="40.0" y="40.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="40.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-art style="left:150px;top:106px"><span class=cv style="display:block;transform:rotate(9deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="108" height="124" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P6xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P6xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#2DAC52" stop-opacity="0"/><stop offset="1" stop-color="#2DAC52" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P6xg"><stop offset=".6" stop-color="#5BC67A" stop-opacity="1"/><stop offset=".72" stop-color="#5BC67A" stop-opacity=".45"/><stop offset="1" stop-color="#5BC67A" stop-opacity="0"/></radialGradient>
+<linearGradient id="P6xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P6xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P6xm)"/></mask>
+<filter id="P6xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P6xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P6xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><polygon points="50.0,19.0 82.3,42.5 70.0,80.5 30.0,80.5 17.7,42.5" fill="#fff" stroke="#fff" stroke-width="18" stroke-linejoin="round"/></mask></defs><g transform="rotate(0 50 50)"><polygon points="50.0,19.0 82.3,42.5 70.0,80.5 30.0,80.5 17.7,42.5" fill="#5BC67A" stroke="#5BC67A" stroke-width="18" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P6xh)" mask="url(#P6xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P6xs)" mask="url(#P6xsm)"/><rect x="40.0" y="42.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="42.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-label><p class=cc-name>IV | Design</p><p class="cc-price">$2,500<span class=pv-unit>/mo</span><span class=vh>, was</span><s class=pv-was>$5,000</s></p></div></div></div><article class="pv-pc m-colour on" data-k="design" data-mode="orange" aria-hidden="false" style="background:#F19D38;color:#141415;box-shadow:inset 0 0 0 1.5px transparent"><div class=pv-top><h3 class=pv-name>IV | Design</h3><p class=pv-tag style="background:#fff;color:#141415">Black Friday</p></div><p class=pv-sub>Unlimited Creative</p><div class=pv-rule style="border-color:#141415"></div><p class="pv-price">$2,500<span class=pv-unit>/mo</span><span class=vh>, was</span><s class=pv-was>$5,000</s></p><p class=pv-note>Black Friday through Nov 30. Join now and keep your rate.</p><div class=pv-inc style="background:#000;color:#fff"><h4>Included</h4><ul><li>Unlimited creative</li><li>One active request</li><li>Under 48 hours each</li><li>No proposals or hourly bills</li></ul></div><div class=pv-ctas><a class="pv-ghost" href="https://cal.com/ivdesign/30min" data-cal-namespace="30min" data-cal-link="ivdesign/30min" data-cal-config='{"layout":"month_view","theme":"dark"}'><svg class=glyph width=22 height=22 viewBox="0 0 22 22" aria-hidden="true" style="flex:none"><g fill="#EB4699"><path d="M11 2.5C13 6 18 9.5 18 13.2a7 7 0 0 1-14 0C4 9.5 9 6 11 2.5Z"/></g><rect x="8.3" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/><rect x="11.9" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/></svg>Book a call</a></div><div class=pv-peek aria-hidden="true"><span class=cv style="display:block;transform:rotate(12deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="110" height="126" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P7xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P7xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#E20875" stop-opacity="0"/><stop offset="1" stop-color="#E20875" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P7xg"><stop offset=".6" stop-color="#EB4699" stop-opacity="1"/><stop offset=".72" stop-color="#EB4699" stop-opacity=".45"/><stop offset="1" stop-color="#EB4699" stop-opacity="0"/></radialGradient>
+<linearGradient id="P7xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P7xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P7xm)"/></mask>
+<filter id="P7xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P7xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P7xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></mask></defs><g transform="rotate(8 50 50)"><path d="M50 10 C58 26 84 44 84 62 A34 34 0 0 1 16 62 C16 44 42 26 50 10Z" fill="#EB4699" stroke="#EB4699" stroke-width="6" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P7xh)" mask="url(#P7xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P7xs)" mask="url(#P7xsm)"/><rect x="40.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="52.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div></article></div><div class=pa-pair id="pa-sprint"><div class=pa-card style="transform:rotate(-4deg)"><div class="cc" style="width:300px;height:190px;background:#fff;color:#141415;box-shadow:inset 0 0 0 1.5px #E5E5EA"><div class=cc-art style="left:64%;top:58%;transform:translate(-50%,-50%)"><span class=cv style="display:block;transform:rotate(0deg);"><span class="bob cvb" style="display:block"><svg width="81" height="93" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P8xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P8xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#E25600" stop-opacity="0"/><stop offset="1" stop-color="#E25600" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P8xg"><stop offset=".6" stop-color="#F19D38" stop-opacity="1"/><stop offset=".72" stop-color="#F19D38" stop-opacity=".45"/><stop offset="1" stop-color="#F19D38" stop-opacity="0"/></radialGradient>
+<linearGradient id="P8xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P8xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P8xm)"/></mask>
+<filter id="P8xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P8xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P8xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask><filter id="P8xcs" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="3"/></filter></defs><ellipse cx="50" cy="100" rx="30" ry="4.5" fill="#141415" opacity=".22" filter="url(#P8xcs)"/><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P8xh)" mask="url(#P8xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P8xs)" mask="url(#P8xsm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-label><p class=cc-name>IV | Sprint</p><p class="cc-price">$50,000</p></div></div></div><article class="pv-pc m-white on" data-k="sprint" data-mode="white" aria-hidden="false" style="background:#fff;color:#141415;box-shadow:inset 0 0 0 1.5px #E5E5EA"><div class=pv-top><h3 class=pv-name>IV | Sprint</h3><p class=pv-tag style="background:#F5F5F7;color:#141415">Five days</p></div><p class=pv-sub>Design Sprint</p><div class=pv-rule style="border-color:#E5E5EA"></div><p class="pv-price">$50,000</p><p class=pv-note>5 days with Bruce: problem to tested prototype.</p><div class=pv-inc style="background:#F5F5F7;color:#141415"><h4>Included</h4><ul><li>Map the problem</li><li>Sketch and decide</li><li>Build a prototype</li><li>Tested with real customers</li></ul></div><div class=pv-ctas><a class="pv-ghost" href="https://cal.com/ivdesign/30min" data-cal-namespace="30min" data-cal-link="ivdesign/30min" data-cal-config='{"layout":"month_view","theme":"dark"}'><svg class=glyph width=22 height=22 viewBox="0 0 22 22" aria-hidden="true" style="flex:none"><g fill="#F19D38"><circle cx="11" cy="11" r="8.5"/></g><rect x="8.3" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/><rect x="11.9" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/></svg>Book a call</a></div><div class=pv-peek aria-hidden="true"><span class=cv style="display:block;transform:rotate(0deg);"><span class="bob cvb" style="display:block"><svg width="110" height="126" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P9xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P9xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#E25600" stop-opacity="0"/><stop offset="1" stop-color="#E25600" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P9xg"><stop offset=".6" stop-color="#F19D38" stop-opacity="1"/><stop offset=".72" stop-color="#F19D38" stop-opacity=".45"/><stop offset="1" stop-color="#F19D38" stop-opacity="0"/></radialGradient>
+<linearGradient id="P9xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P9xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P9xm)"/></mask>
+<filter id="P9xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P9xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P9xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask><filter id="P9xcs" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="3"/></filter></defs><ellipse cx="50" cy="100" rx="30" ry="4.5" fill="#141415" opacity=".22" filter="url(#P9xcs)"/><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P9xh)" mask="url(#P9xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P9xs)" mask="url(#P9xsm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div></article></div><div class=pa-pair id="pa-enterprise"><div class=pa-card style="transform:rotate(5deg)"><div class="cc gr" style="width:300px;height:190px;background:#2E5CF0;color:#fff;box-shadow:inset 0 0 0 1.5px transparent"><div class=cc-art style="left:150px;top:57px"><span class=cv style="display:block;transform:rotate(-10deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="126" height="145" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P10xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P10xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#2DAC52" stop-opacity="0"/><stop offset="1" stop-color="#2DAC52" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P10xg"><stop offset=".6" stop-color="#5BC67A" stop-opacity="1"/><stop offset=".72" stop-color="#5BC67A" stop-opacity=".45"/><stop offset="1" stop-color="#5BC67A" stop-opacity="0"/></radialGradient>
+<linearGradient id="P10xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P10xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P10xm)"/></mask>
+<filter id="P10xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P10xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P10xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><polygon points="50.0,19.0 82.3,42.5 70.0,80.5 30.0,80.5 17.7,42.5" fill="#fff" stroke="#fff" stroke-width="18" stroke-linejoin="round"/></mask></defs><g transform="rotate(0 50 50)"><polygon points="50.0,19.0 82.3,42.5 70.0,80.5 30.0,80.5 17.7,42.5" fill="#5BC67A" stroke="#5BC67A" stroke-width="18" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P10xh)" mask="url(#P10xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P10xs)" mask="url(#P10xsm)"/><rect x="40.0" y="42.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="42.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-art style="left:222px;top:95px"><span class=cv style="display:block;transform:rotate(12deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="102" height="117" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P11xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P11xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#E25600" stop-opacity="0"/><stop offset="1" stop-color="#E25600" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P11xg"><stop offset=".6" stop-color="#F19D38" stop-opacity="1"/><stop offset=".72" stop-color="#F19D38" stop-opacity=".45"/><stop offset="1" stop-color="#F19D38" stop-opacity="0"/></radialGradient>
+<linearGradient id="P11xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P11xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P11xm)"/></mask>
+<filter id="P11xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P11xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P11xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><circle cx="50" cy="50" r="42" fill="#fff"/></mask></defs><g transform="rotate(0 50 50)"><circle cx="50" cy="50" r="42" fill="#F19D38"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P11xh)" mask="url(#P11xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P11xs)" mask="url(#P11xsm)"/><rect x="40.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="38.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div><div class=cc-label><p class=cc-name>IV | Enterprise</p><p class="cc-price pv-pw">Custom quote</p></div></div></div><article class="pv-pc m-colour on" data-k="enterprise" data-mode="royal" aria-hidden="false" style="background:#2E5CF0;color:#fff;box-shadow:inset 0 0 0 1.5px transparent"><div class=pv-top><h3 class=pv-name>IV | Enterprise</h3><p class=pv-tag style="background:#fff;color:#141415">One client at a time</p></div><p class=pv-sub>Fractional CPO</p><div class=pv-rule style="border-color:#fff"></div><p class="pv-price pv-pw">Custom quote</p><p class=pv-note>When it&#x27;s big, I bring the team.</p><div class=pv-inc style="background:#fff;color:#141415"><h4>Included</h4><ul><li>I sit with your leadership as your product lead</li><li>Big projects, scoped and run start to finish</li><li>A turnkey team built around the work</li><li>End-to-end delivery, strategy through launch</li></ul></div><div class=pv-ctas><a class="pv-ghost" href="https://cal.com/ivdesign/30min" data-cal-namespace="30min" data-cal-link="ivdesign/30min" data-cal-config='{"layout":"month_view","theme":"dark"}'><svg class=glyph width=22 height=22 viewBox="0 0 22 22" aria-hidden="true" style="flex:none"><g fill="#5BC67A"><polygon points="11,3 19,9 16,18.5 6,18.5 3,9" stroke-linejoin="round"/></g><rect x="8.3" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/><rect x="11.9" y="8.2" width="2" height="4.6" rx="1" fill="#141415"/></svg>Book a call</a></div><div class=pv-peek aria-hidden="true"><span class=cv style="display:block;transform:rotate(12deg);filter:drop-shadow(0 14px 16px #14141547);"><span class="bob cvb" style="display:block"><svg width="110" height="126" viewBox="-0 -8 100 115" style="overflow:visible"><defs>
+<radialGradient id="P12xh" gradientUnits="userSpaceOnUse" cx="30" cy="20" r="72"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="P12xs" gradientUnits="userSpaceOnUse" cx="36" cy="24" r="100"><stop offset=".5" stop-color="#2DAC52" stop-opacity="0"/><stop offset="1" stop-color="#2DAC52" stop-opacity="0.75"/></radialGradient>
+<radialGradient id="P12xg"><stop offset=".6" stop-color="#5BC67A" stop-opacity="1"/><stop offset=".72" stop-color="#5BC67A" stop-opacity=".45"/><stop offset="1" stop-color="#5BC67A" stop-opacity="0"/></radialGradient>
+<linearGradient id="P12xm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="P12xk"><rect x="-40" y="100" width="180" height="70" fill="url(#P12xm)"/></mask>
+<filter id="P12xgb" filterUnits="userSpaceOnUse" x="-40" y="-40" width="180" height="180"><feGaussianBlur stdDeviation="4"/></filter><filter id="P12xb" filterUnits="userSpaceOnUse" x="-40" y="70" width="180" height="70"><feGaussianBlur stdDeviation="7"/></filter><mask id="P12xsm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="160" height="160"><polygon points="50.0,19.0 82.3,42.5 70.0,80.5 30.0,80.5 17.7,42.5" fill="#fff" stroke="#fff" stroke-width="18" stroke-linejoin="round"/></mask></defs><g transform="rotate(0 50 50)"><polygon points="50.0,19.0 82.3,42.5 70.0,80.5 30.0,80.5 17.7,42.5" fill="#5BC67A" stroke="#5BC67A" stroke-width="18" stroke-linejoin="round"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P12xh)" mask="url(#P12xsm)"/><rect x="-30" y="-30" width="160" height="160" fill="url(#P12xs)" mask="url(#P12xsm)"/><rect x="40.0" y="42.0" width="7" height="16" rx="3.5" fill="#141415"/><rect x="53.0" y="42.0" width="7" height="16" rx="3.5" fill="#141415"/></g></svg></span></span></div></article></div></div></section>
+
+<script>
+(function () {
+  /* IV embed r5c fit — fixed-390 composition scales DOWN to the frame width (never cropped, never scaled up);
+     wider frames centre it. No internal scrollbars; html height = true content height × scale. */
+  var DW = 390;
+  var root = document.querySelector("body > section") || document.body.firstElementChild;
+  var de = document.documentElement, b = document.body;
+  var lastH = -1;
+  function contentH() {
+    var h = 0;
+    Array.prototype.forEach.call(b.children, function (el) {
+      if (el.tagName === "SCRIPT" || el.tagName === "STYLE") return;
+      var cs = getComputedStyle(el);
+      if (cs.position === "fixed" || cs.display === "none") return;
+      h = Math.max(h, el.offsetTop + el.offsetHeight);
+    });
+    return Math.ceil(h || b.scrollHeight);
+  }
+  function apply() {
+    var w = window.innerWidth || DW;
+    var s = Math.min(1, w / DW);
+    var ox = Math.max(0, (w - DW * s) / 2);
+    b.style.margin = "0";
+    b.style.width = DW + "px";
+    b.style.maxWidth = DW + "px";
+    b.style.height = "auto";
+    b.style.minHeight = "0";
+    b.style.overflow = "hidden";
+    b.style.transformOrigin = "0 0";
+    b.style.transform = s === 1 && ox === 0 ? "" : "translate(" + ox + "px,0) scale(" + s + ")";
+    var h = contentH();
+    de.style.overflow = "hidden";
+    de.style.width = w + "px";
+    de.style.height = Math.ceil(h * s) + "px";
+    var bg = getComputedStyle(b).backgroundColor;
+    if (root) { var rb = getComputedStyle(root.firstElementChild || root).backgroundColor; if (rb && rb !== "rgba(0, 0, 0, 0)") bg = rb; }
+    if (bg && bg !== "rgba(0, 0, 0, 0)") de.style.background = bg;
+    var outH = Math.ceil(h * s);
+    if (outH !== lastH) {
+      lastH = outH;
+      window.__ivFit = { scale: s, contentH: h, frameH: outH, width: w };
+      if (window.parent !== window) {
+        try { parent.postMessage({ source: "iv-embed", type: "iv-embed-height", id: location.pathname, height: outH, scale: s }, "*"); } catch (e) {}
+      }
+    }
+  }
+  window.addEventListener("resize", apply);
+  if ("ResizeObserver" in window && root) new ResizeObserver(function () { apply(); }).observe(root);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
+  window.addEventListener("load", apply);
+  apply();
+})();
+
+</script>
+</body></html>
